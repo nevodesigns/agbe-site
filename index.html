@@ -5,30 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AGBE — an offline farm advisor</title>
 <meta name="description" content="AGBE is an offline agricultural advisor for African smallholders. A 1B language model tuned on African agronomy, running on an 8GB laptop with no internet.">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="AGBE — an offline farm advisor">
+<meta property="og:description" content="A 1B language model tuned on African agronomy, running on an 8GB laptop with no internet.">
+<meta property="og:image" content="/img/hero-maize-kaduna.jpg">
 <style>
   :root{
-    --paper:#F7F2E7;
-    --paper-2:#F1EADA;
-    --ink:#22271F;
-    --ink-soft:#5A6154;
-    --green:#2E4633;
-    --ochre:#A9662A;
-    --rule:#D6CDB6;
-    --rule-strong:#B9AE93;
+    --paper:#F7F2E7; --paper-2:#F1EADA;
+    --ink:#22271F; --ink-soft:#5A6154;
+    --green:#2E4633; --ochre:#A9662A;
+    --rule:#D6CDB6; --rule-strong:#B9AE93;
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
     --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --paper:#151814;
-      --paper-2:#1B1F1A;
-      --ink:#E9E4D5;
-      --ink-soft:#9AA292;
-      --green:#93BA9C;
-      --ochre:#D8A05C;
-      --rule:#2F362C;
-      --rule-strong:#454E41;
+      --paper:#151814; --paper-2:#1B1F1A; --ink:#E9E4D5; --ink-soft:#9AA292;
+      --green:#93BA9C; --ochre:#D8A05C; --rule:#2F362C; --rule-strong:#454E41;
     }
   }
   :root[data-theme="dark"]{
@@ -39,61 +33,71 @@
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--serif);
-    font-size:19px;
-    line-height:1.62;
-    /* faint paper tooth, drawn not loaded */
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(169,102,42,.030) 0 1px, transparent 1px),
-      radial-gradient(circle at 70% 70%, rgba(46,70,51,.030) 0 1px, transparent 1px);
-    background-size:37px 37px, 53px 53px;
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--serif); font-size:19px; line-height:1.62;
   }
-  .wrap{max-width:74ch;margin:0 auto;padding:0 1.5rem 6rem}
+  img{max-width:100%;display:block}
+  .wrap{max-width:74ch;margin:0 auto;padding:0 1.5rem}
 
-  /* ---------- masthead ---------- */
-  header.mast{padding:3.5rem 0 0}
-  .mast-rule{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);height:5px}
-  .mast-inner{display:flex;align-items:flex-end;gap:1.25rem;padding:1.4rem 0 1rem}
-  .sprig{flex:0 0 auto;width:54px;height:54px;color:var(--green)}
-  h1{
-    font-size:clamp(3.2rem,12vw,5.4rem);
-    line-height:.86;margin:0;letter-spacing:.02em;
-    font-weight:600;color:var(--ink);
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; min-height:min(78vh,660px);
+    display:flex; align-items:flex-end;
+    background:#11150F;
+    overflow:hidden;
   }
-  .tag{font-family:var(--sans);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
-       color:var(--ink-soft);margin:.55rem 0 0}
-  .mast-meta{
-    display:flex;flex-wrap:wrap;gap:.5rem 1.6rem;padding:.6rem 0 1.1rem;
-    border-top:1px solid var(--rule);border-bottom:3px double var(--rule-strong);
-    font-family:var(--sans);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--ink-soft);
+  .hero img.bg{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; opacity:.62;
+    filter:saturate(.82) contrast(1.03);
+  }
+  .hero::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,14,9,.62) 0%, rgba(10,14,9,.30) 38%, rgba(10,14,9,.88) 100%);
+  }
+  .hero-inner{position:relative;z-index:2;width:100%;max-width:74ch;margin:0 auto;padding:0 1.5rem 2.6rem}
+  .hero .mark{width:62px;height:62px;color:#E4C77A;margin-bottom:.9rem}
+  h1{
+    font-size:clamp(3.4rem,13vw,6rem); line-height:.84; margin:0;
+    letter-spacing:.02em; font-weight:600; color:#F6F1E3;
+  }
+  .tagline{
+    font-family:var(--sans); font-size:.74rem; letter-spacing:.24em;
+    text-transform:uppercase; color:#D8CDA9; margin:.85rem 0 0;
+  }
+  .hero-meta{
+    display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin:1.5rem 0 0;padding-top:.9rem;
+    border-top:1px solid rgba(232,222,190,.32);
+    font-family:var(--sans);font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;
+    color:#CFC4A2;
   }
 
   /* ---------- type ---------- */
-  .lede{font-size:1.32rem;line-height:1.5;margin:2.4rem 0 0}
+  .lede{font-size:1.3rem;line-height:1.5;margin:2.8rem 0 0}
   .lede b{font-weight:600}
   p{margin:1.15rem 0}
-  h2{
-    font-family:var(--sans);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--ochre);margin:3.4rem 0 .2rem;font-weight:600;
-  }
-  h2 + .h2sub{font-size:1.65rem;line-height:1.2;margin:.1rem 0 1.1rem;font-weight:600}
-  .drop::first-letter{
-    float:left;font-size:3.5rem;line-height:.82;padding:.14em .1em 0 0;color:var(--green);font-weight:600;
-  }
+  h2{font-family:var(--sans);font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;
+     color:var(--ochre);margin:3.4rem 0 .2rem;font-weight:600}
+  h2 + .h2sub{font-size:1.62rem;line-height:1.2;margin:.1rem 0 1.1rem;font-weight:600}
+  .drop::first-letter{float:left;font-size:3.4rem;line-height:.82;padding:.14em .1em 0 0;
+                      color:var(--green);font-weight:600}
   a{color:var(--green);text-decoration-thickness:1px;text-underline-offset:2px}
-  strong{font-weight:600}
+  code{font-family:var(--mono);font-size:.86em}
 
-  /* ---------- pull quote / marginal ---------- */
-  .pull{
-    border-left:3px solid var(--ochre);padding:.15rem 0 .15rem 1.15rem;margin:2rem 0;
-    font-size:1.16rem;line-height:1.45;color:var(--ink);
+  .pull{border-left:3px solid var(--ochre);padding:.15rem 0 .15rem 1.15rem;margin:2rem 0;
+        font-size:1.14rem;line-height:1.45}
+
+  /* ---------- plates ---------- */
+  figure.plate{margin:2.6rem 0;border-top:1px solid var(--ink);padding-top:.85rem}
+  figure.plate img{width:100%;height:auto;filter:saturate(.88)}
+  figure.plate figcaption{
+    font-family:var(--sans);font-size:.72rem;line-height:1.55;color:var(--ink-soft);
+    padding-top:.6rem;border-bottom:1px solid var(--rule);padding-bottom:.85rem;
   }
-  .pull .who{display:block;font-family:var(--sans);font-size:.68rem;letter-spacing:.16em;
-              text-transform:uppercase;color:var(--ink-soft);margin-top:.55rem}
+  figure.plate .pn{
+    display:inline-block;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ochre);margin-right:.5rem;
+  }
 
   /* ---------- table ---------- */
   .tablewrap{overflow-x:auto;margin:1.5rem 0 .6rem;border-top:1px solid var(--ink);
@@ -103,68 +107,70 @@
           color:var(--ink-soft);padding-top:.7rem;line-height:1.5}
   th,td{padding:.5rem .7rem;text-align:right;white-space:nowrap}
   th:first-child,td:first-child{text-align:left}
-  thead th{border-bottom:1px solid var(--rule-strong);font-weight:600;
-           font-family:var(--sans);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
+  thead th{border-bottom:1px solid var(--rule-strong);font-weight:600;font-family:var(--sans);
+           font-size:.65rem;letter-spacing:.1em;text-transform:uppercase}
   tbody tr + tr td{border-top:1px solid var(--rule)}
   tr.pick td{background:var(--paper-2);font-weight:700;color:var(--green)}
   tr.fail td{color:var(--ink-soft)}
-  tr.pick td:first-child::after{content:" ◂ selected";font-family:var(--sans);font-size:.6rem;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--ochre)}
 
-  /* ---------- spec strip ---------- */
-  .spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:0;
+  .spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));gap:0;
         border:1px solid var(--rule-strong);margin:1.8rem 0}
   .spec div{padding:.9rem 1rem;border-right:1px solid var(--rule)}
   .spec div:last-child{border-right:0}
-  .spec dt{font-family:var(--sans);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+  .spec dt{font-family:var(--sans);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;
            color:var(--ink-soft);margin:0 0 .2rem}
-  .spec dd{margin:0;font-family:var(--mono);font-size:1.05rem;color:var(--green);font-weight:600}
+  .spec dd{margin:0;font-family:var(--mono);font-size:1.02rem;color:var(--green);font-weight:600}
 
-  /* ---------- formula ---------- */
-  .formula{
-    font-family:var(--mono);font-size:.86rem;line-height:1.9;background:var(--paper-2);
-    border-left:3px solid var(--green);padding:1rem 1.1rem;margin:1.4rem 0;overflow-x:auto;
-  }
+  .formula{font-family:var(--mono);font-size:.85rem;line-height:1.9;background:var(--paper-2);
+           border-left:3px solid var(--green);padding:1rem 1.1rem;margin:1.4rem 0;overflow-x:auto}
   .formula .hi{color:var(--ochre);font-weight:700}
 
-  /* ---------- list ---------- */
   ol.steps{counter-reset:s;list-style:none;padding:0;margin:1.2rem 0}
   ol.steps li{counter-increment:s;position:relative;padding-left:2.6rem;margin:.95rem 0}
-  ol.steps li::before{
-    content:counter(s,decimal-leading-zero);position:absolute;left:0;top:.15em;
-    font-family:var(--mono);font-size:.78rem;color:var(--ochre);font-weight:700;
-  }
+  ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:.15em;
+    font-family:var(--mono);font-size:.78rem;color:var(--ochre);font-weight:700}
 
-  footer{margin-top:4.5rem;border-top:3px double var(--rule-strong);padding-top:1.2rem;
-         font-family:var(--sans);font-size:.74rem;color:var(--ink-soft);line-height:1.7}
+  footer{margin-top:4.5rem;border-top:3px double var(--rule-strong);padding:1.2rem 0 5rem;
+         font-family:var(--sans);font-size:.73rem;color:var(--ink-soft);line-height:1.7}
   footer a{color:var(--ink-soft)}
   .sig{font-family:var(--serif);font-size:.95rem;color:var(--ink)}
+  .credits{font-size:.68rem;margin-top:1.1rem;padding-top:.8rem;border-top:1px solid var(--rule)}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header class="mast">
-    <div class="mast-rule"></div>
-    <div class="mast-inner">
-      <svg class="sprig" viewBox="0 0 60 60" fill="none" aria-hidden="true">
-        <path d="M30 56V16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M30 30C30 30 19 29 13 22c-2.6-3-3-8-3-8s5.2.4 8.6 3C25 22.4 30 30 30 30Z" fill="currentColor" opacity=".85"/>
-        <path d="M30 30c0 0 11-1 17-8 2.6-3 3-8 3-8s-5.2.4-8.6 3C35 22.4 30 30 30 30Z" fill="currentColor" opacity=".55"/>
-        <path d="M30 44c0 0-8.4-.8-13-6.2-2-2.3-2.3-6.1-2.3-6.1s4 .3 6.6 2.3C26 37 30 44 30 44Z" fill="currentColor" opacity=".7"/>
-      </svg>
-      <div>
-        <h1>AGBE</h1>
-        <p class="tag">Àgbẹ̀ · farmer · an offline farm advisor</p>
-      </div>
-    </div>
-    <div class="mast-meta">
+<section class="hero">
+  <img class="bg" src="/img/hero-maize-kaduna.jpg"
+       alt="Maize under cultivation on smallholder plots outside Kaduna, Nigeria">
+  <div class="hero-inner">
+    <!-- The mark: a leaf whose veins are circuit traces terminating in nodes.
+         Farming and machine intelligence in one shape, legible at favicon size. -->
+    <svg class="mark" viewBox="0 0 64 64" fill="none" aria-label="AGBE" role="img">
+      <path d="M32 4C46 16 53 33 32 60C11 33 18 16 32 4Z"
+            stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" fill="none"/>
+      <path d="M32 11V54" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M32 24L20.5 18M32 34L18 29M32 44L22 41M32 24L43.5 18M32 34L46 29M32 44L42 41"
+            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <circle cx="20.5" cy="18" r="2.9" fill="currentColor"/>
+      <circle cx="18"   cy="29" r="2.9" fill="currentColor"/>
+      <circle cx="22"   cy="41" r="2.4" fill="currentColor"/>
+      <circle cx="43.5" cy="18" r="2.9" fill="currentColor"/>
+      <circle cx="46"   cy="29" r="2.9" fill="currentColor"/>
+      <circle cx="42"   cy="41" r="2.4" fill="currentColor"/>
+      <circle cx="32"   cy="9"  r="3.4" fill="currentColor"/>
+    </svg>
+    <h1>AGBE</h1>
+    <p class="tagline">Àgbẹ̀ · farmer · an offline farm advisor</p>
+    <div class="hero-meta">
       <span>Bulletin No. 01</span>
       <span>Africa Deep Tech Challenge 2026</span>
       <span>Domain: Agriculture</span>
       <span>Status: in build</span>
     </div>
-  </header>
+  </div>
+</section>
+
+<div class="wrap">
 
   <p class="lede">An agricultural advisor that runs entirely on a <b>$400 laptop with the network cable pulled out</b>. No cloud, no API key, no data cost. Built for the machine that is already on the desk.</p>
 
@@ -177,9 +183,15 @@
     So the constraint is not a feature we added. It is the shape of the whole thing: if it cannot answer with the network off, on hardware a farmer or a co-operative already owns, it does not count.
   </div>
 
+  <figure class="plate">
+    <img src="/img/maize-cassava-farm.jpg" loading="lazy"
+         alt="A smallholder plot intercropping maize with cassava">
+    <figcaption><span class="pn">Plate 1</span> Maize intercropped with cassava. The questions AGBE is trained on are the ones this plot raises: spacing, weeding windows, what the yellowing on the lower leaves means, and whether it is worth spraying at all.</figcaption>
+  </figure>
+
   <h2>What it is</h2>
   <p class="h2sub">One small model, tuned hard, running locally.</p>
-  <p>AGBE is a compact language model fine-tuned on West and Central African agronomy and quantised to run through <span style="font-family:var(--mono);font-size:.86em">llama.cpp</span> on commodity hardware. It answers questions about crops, pests, livestock, soils, storage and getting produce to market. It answers in English and in Nigerian Pidgin.</p>
+  <p>AGBE is a compact language model fine-tuned on West and Central African agronomy and quantised to run through <code>llama.cpp</code> on commodity hardware. It answers questions about crops, pests, livestock, soils, storage and getting produce to market, in English and in Nigerian Pidgin.</p>
 
   <div class="spec">
     <div><dt>Target machine</dt><dd>8 GB RAM</dd></div>
@@ -201,17 +213,16 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C
   </div>
 
   <p>Read that carefully and it tells you what to build. Throughput above 15 tokens per second earns <em>nothing</em>. Memory is paid for linearly. So the instinct to pick the largest model that fits inside 8 GB is precisely backwards, and it is what most of a 1,598-strong field will do.</p>
-  <p>We measured every candidate on the target profile: four threads, no GPU offload, memory capped to 7 GB.</p>
 
   <div class="tablewrap">
   <table>
-    <caption>Measured on an i7-10850H constrained to the Standard Laptop profile. Points shown are the 50 available before any human accuracy judging. All five runs carried the same thermal penalty, so they compare fairly.</caption>
+    <caption>Measured on an i7-10850H constrained to the Standard Laptop profile: four threads, no GPU offload, memory capped to 7 GB. Points shown are the 50 available before any human accuracy judging. All five runs carried the same thermal penalty, so they compare fairly.</caption>
     <thead>
       <tr><th>Model (Q4_K_M)</th><th>tok/s</th><th>Peak RAM</th><th>S_perf</th><th>S_eff</th><th>Points</th></tr>
     </thead>
     <tbody>
       <tr><td>Qwen2.5 0.5B</td><td>57.2</td><td>0.55 GB</td><td>100.0</td><td>92.2</td><td>38.44</td></tr>
-      <tr class="pick"><td>Gemma 3 1B</td><td>26.9</td><td>0.88 GB</td><td>100.0</td><td>87.4</td><td>37.48</td></tr>
+      <tr class="pick"><td>Gemma 3 1B ◂</td><td>26.9</td><td>0.88 GB</td><td>100.0</td><td>87.4</td><td>37.48</td></tr>
       <tr><td>Llama 3.2 1B</td><td>32.6</td><td>1.26 GB</td><td>100.0</td><td>82.0</td><td>36.39</td></tr>
       <tr><td>Qwen2.5 1.5B</td><td>24.9</td><td>1.69 GB</td><td>100.0</td><td>75.9</td><td>35.19</td></tr>
       <tr class="fail"><td>Qwen2.5 3B</td><td>11.1</td><td>3.26 GB</td><td>74.2</td><td>53.4</td><td>22.95</td></tr>
@@ -219,8 +230,14 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C
   </table>
   </div>
 
-  <p>The 3B is the instructive one. It is the only candidate that misses the throughput bar outright, and its footprint collapses the efficiency term. It gives up <strong>14.5 points</strong> against a 1B before a single question is asked, which it would have to win back by being twenty-nine accuracy points better. It will not be.</p>
+  <p>The 3B is the instructive row. It is the only candidate that misses the throughput bar outright, and its footprint collapses the efficiency term. It concedes <strong>14.5 points</strong> to a 1B before a single question is asked, which it would have to win back by being twenty nine accuracy points better. It will not be.</p>
   <p>Gemma 3 1B was chosen over a 0.5B for under one point of engineering, and over Llama 3.2 1B at identical file size purely because it holds 0.88 GB in memory instead of 1.26 GB.</p>
+
+  <figure class="plate">
+    <img src="/img/maize-plant.jpg" loading="lazy"
+         alt="Close view of a maize plant showing the whorl where fall armyworm larvae feed">
+    <figcaption><span class="pn">Plate 2</span> The whorl of a maize plant. Fall armyworm feeds down inside it, which is why a spray passed over the top of the leaves mostly misses and wastes money. Knowing that distinction is the difference between advice and noise.</figcaption>
+  </figure>
 
   <h2>The corpus</h2>
   <p class="h2sub">Nothing in the training data is unattributable.</p>
@@ -228,7 +245,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C
   <p>Instead every training pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus.</p>
   <ol class="steps">
     <li><strong>No invented numbers.</strong> No fabricated yields, no fabricated prices, and above all no agrochemical doses. Where a real answer needs a rate, it points at the product label and the local extension officer, because doses vary by product and a confident wrong number is dangerous.</li>
-    <li><strong>Local grounding.</strong> Crops, varieties, seasons and local names that a farmer in the middle belt actually uses. Cassava mosaic, fall armyworm, striga, aflatoxin, Newcastle disease.</li>
+    <li><strong>Local grounding.</strong> Crops, varieties, seasons and local names a farmer in the middle belt actually uses. Cassava mosaic, fall armyworm, striga, aflatoxin, Newcastle disease.</li>
     <li><strong>Multi-turn.</strong> Judges hold a live conversation, so the model is trained on follow-ups: what if I cannot afford that, is it too late in the season, I tried that and it came back.</li>
     <li><strong>Honest limits.</strong> Bacterial wilt has no chemical cure, and the model says so. Blossom end rot is a watering disorder, so it talks the farmer out of buying an insecticide.</li>
   </ol>
@@ -243,6 +260,13 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C
        <a href="https://github.com/nevodesigns/agbe">github.com/nevodesigns/agbe</a>.
        Runs on llama.cpp. Weights released as GGUF.</p>
     <p>Figures on this page are measured, not estimated. Where a number is provisional it says so.</p>
+    <p class="credits">
+      Photographs, via Wikimedia Commons:
+      <em>Maize cultivation, Kaduna city, Nigeria</em> by Onisp (CC BY-SA 4.0);
+      <em>A maize and cassava farm</em> by Phina001 (CC BY-SA 4.0);
+      <em>Maize farm plant</em> by Bembety (CC0).
+      Reused under their respective licences.
+    </p>
   </footer>
 
 </div>
