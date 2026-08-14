@@ -219,3 +219,34 @@ figure.plate.chart img{filter:none}
   .cols{grid-template-columns:1fr;gap:0}
   .cols div:last-child{margin-top:1.6rem}
 }
+
+/* ---------- build notes page ---------- */
+.notes-head{padding:3.5rem 0 0;border-bottom:3px double var(--rule-strong);margin-bottom:.5rem}
+.back{
+  font-family:var(--sans);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);text-decoration:none;
+}
+.back:hover{color:var(--ink)}
+.notes-title{
+  font-size:clamp(2.6rem,9vw,4rem);line-height:.9;margin:.9rem 0 0;
+  font-weight:600;color:var(--ink);letter-spacing:.01em;
+}
+.notes-sub{font-size:1.18rem;line-height:1.5;margin:1rem 0 0;color:var(--ink)}
+.notes-meta{color:var(--ink-soft);border-top-color:var(--rule);margin-bottom:1.4rem}
+
+/* Documentation call-to-action on the landing page */
+.readmore{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  border:1px solid var(--rule-strong);background:var(--paper-2);
+  padding:1.1rem 1.2rem;margin:2.4rem 0;text-decoration:none;color:var(--ink);
+}
+.readmore:hover{border-color:var(--ink)}
+.readmore .rm-t{font-size:1.12rem;font-weight:600;line-height:1.35;display:block}
+.readmore .rm-s{
+  font-family:var(--sans);font-size:.76rem;color:var(--ink-soft);
+  display:block;margin-top:.3rem;line-height:1.5;
+}
+.readmore .rm-go{
+  font-family:var(--sans);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ochre);white-space:nowrap;font-weight:600;
+}
