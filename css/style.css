@@ -250,3 +250,31 @@ figure.plate.chart img{filter:none}
   font-family:var(--sans);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ochre);white-space:nowrap;font-weight:600;
 }
+
+/* ---------- fixed top-right controls ---------- */
+/* Documentation link and theme toggle share one group so they read as a pair
+   rather than two floating widgets. */
+.topnav{
+  position:fixed; top:1rem; right:1rem; z-index:20;
+  display:flex; align-items:stretch; gap:0;
+}
+.topnav-link, .topnav .theme-toggle{
+  font-family:var(--sans); font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; line-height:1;
+  background:var(--paper); color:var(--ink-soft);
+  border:1px solid var(--rule-strong);
+  padding:.5rem .7rem; cursor:pointer; text-decoration:none;
+  display:flex; align-items:center;
+}
+.topnav-link{border-right:0}
+.topnav-link:hover, .topnav .theme-toggle:hover{color:var(--ink);border-color:var(--ink)}
+.topnav-link:hover + .theme-toggle{border-left-color:var(--ink)}
+.topnav-link:focus-visible, .topnav .theme-toggle:focus-visible{
+  outline:2px solid var(--ochre); outline-offset:2px;
+}
+/* the standalone rule from before no longer applies inside .topnav */
+.topnav .theme-toggle{position:static;top:auto;right:auto}
+
+@media (max-width:520px){
+  .topnav{top:auto;bottom:1rem;right:1rem}
+}
