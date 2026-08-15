@@ -24,7 +24,7 @@
     <div class="hero-meta notes-meta">
       <span>Africa Deep Tech Challenge 2026</span>
       <span>Domain: Agriculture</span>
-      <span>Gemma 3 1B · LoRA · GGUF Q4_K_M</span>
+      <span>Gemma 3 1B · LoRA r32 · GGUF Q4_K_M</span>
     </div>
   </header>
 
@@ -86,7 +86,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
         <tr><td>v3</td><td>Stopped cross-topic mixing; coherent fact base</td><td>Refusal and timing correct. Pest wrong ("pod borers"); Pidgin answered in English.</td></tr>
         <tr><td>v4</td><td>42 fall-armyworm mentions, Pidgin to 6.7%</td><td>Invented "fall army weevil". More examples did not fix a confusion.</td></tr>
         <tr><td>v5</td><td><strong>rank 32</strong>, 5 epochs</td><td>Facts finally correct in English and Pidgin. But coherence broke: word salad, and it invented a pesticide called "dorabacite".</td></tr>
-        <tr class="pick"><td>v6</td><td>rank 32, back to 3 epochs</td><td>Keep the capacity that fixed facts, drop the over-training that cost coherence.</td></tr>
+        <tr class="pick"><td>v6</td><td>rank 32, back to 3 epochs</td><td>English facts and refusal both correct and stable. Tail degeneration persists, and Pidgin named a food ("amala") as a pest. Shipped, with the Pidgin claim withdrawn.</td></tr>
       </tbody>
       <caption>Four corpus iterations preceded any change to the training configuration. That was the mistake: rank was the missing variable.</caption>
     </table>
@@ -117,6 +117,12 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
   <blockquote class="pull">
     A model that invents a pesticide name is more dangerous than one that admits it does not know. That is why refusal was trained first and guarded hardest.
   </blockquote>
+
+  <h2>05b</h2>
+  <p class="h2sub">Knowing when to stop, and what to withdraw</p>
+  <p>Six builds in, English diagnosis and refusal behaviour are reliable. Nigerian Pidgin is not. It was correct in v5 and in v6 it named <em>amala</em>, a food, as a maize pest. Adding more Pidgin examples is exactly what we tried between v3 and v4 for pest naming, and it produced the invented "fall army weevil" rather than a fix.</p>
+  <p>So the Pidgin claim was withdrawn from <code>language_scope</code> rather than shipped and hoped for. The African use-case claim is unchanged, because it never rested on language: it rests on the domain being cassava mosaic, striga, aflatoxin, Newcastle disease and harmattan planting windows.</p>
+  <p>A capability that works in one build and invents food names in the next is not a capability. Claiming it would have been the easiest thing on this page to get away with, and the fastest way to lose a judge who speaks the language.</p>
 
   <h2>06</h2>
   <p class="h2sub">The environment, which fought back</p>
