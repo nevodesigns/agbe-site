@@ -54,8 +54,8 @@
 
   <div class="factbar">
     <div><dt>Runs on</dt><dd>8 GB laptop</dd></div>
-    <div><dt>Memory used</dt><dd>0.88 GB</dd></div>
-    <div><dt>Speed</dt><dd>27 tok/s</dd></div>
+    <div><dt>Memory used</dt><dd>1.01 GB</dd></div>
+    <div><dt>Speed</dt><dd>23 tok/s</dd></div>
     <div><dt>Internet</dt><dd>None</dd></div>
     <div><dt>Language</dt><dd>English</dd></div>
   </div>
@@ -143,7 +143,8 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
 
   <h2>Honest status</h2>
   <p class="h2sub">Where this actually is, as of today.</p>
-  <p>The engineering is measured and settled: 814 MB on disk, 0.88 GB peak memory, 27 tokens per second on a four-thread CPU with no GPU. The weights are published and the download script is verified end to end.</p>
+  <p>The engineering is measured: 814 MB on disk, 1.01 GB peak memory, 23.2 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
+  <p>One number went the wrong way when we ran the official profiler. Our own harness measured generation at four threads and peaked at 83°C, taking no thermal penalty, which put us at 47.5 of 50. The official profiler also runs a heavy prompt-processing pass, and on this laptop that reaches 100°C and throttles even from a cold start with a fan running. That is a ten point penalty, so the honest figure is <strong>37.1 of 50</strong>. Pinning to four cores made it worse, not better: throughput fell below the fifteen token threshold and it throttled anyway.</p>
   <p>The answer quality is still being evaluated. An earlier build failed its own smoke test badly enough to be unusable: it had learned the shape of our training answers rather than the agronomy in them, and it opened a maize pest question with a sentence about storage before inventing a fungal infection. That was a fault in how the corpus was generated, not in the model or the pipeline. The corpus was rebuilt from scratch, the retrained model is published, and it is being tested now. Whatever those tests say will be reported here.</p>
 
   <blockquote class="pull">
