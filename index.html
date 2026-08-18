@@ -60,7 +60,7 @@
     <div><dt>Language</dt><dd>English</dd></div>
   </div>
 
-  <h2>Try it</h2>
+  <h2 id="try">Try it</h2>
   <p class="h2sub">Three commands. Then pull out your network cable.</p>
   <p>The weights are public and the runtime is <code>llama.cpp</code>, so nothing here is a demo you have to take on trust.</p>
   <div class="figbox">
@@ -167,6 +167,93 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
   <h2>Limits</h2>
   <p class="h2sub">Stated plainly, because a tool that hides its edges is worse than one that names them.</p>
   <p>A 1B model is a knowledgeable extension pamphlet that can hold a conversation. It is not an agronomist, it is not a vet, and it is emphatically not a doctor. It knows West and Central African smallholder systems and will be thinner outside them. Where a real extension officer is available, they are the better answer, and AGBE is built to say so.</p>
+
+
+  <h2>Questions</h2>
+  <p class="h2sub">The things people actually ask, answered plainly.</p>
+
+  <div class="faq">
+
+    <h3 class="faq-cat">Using it</h3>
+
+    <details><summary>Does it really work with no internet?</summary>
+    <p>Yes, and that is the whole point rather than a feature added at the end. You download an 814&nbsp;MB file once. After that the model runs on your own processor and never contacts a server. No API key, no account, no sign-in, no data charges. You can disconnect the wifi, put the laptop in aeroplane mode, or take it somewhere with no signal at all, and it answers exactly the same.</p></details>
+
+    <details><summary>What computer do I need?</summary>
+    <p>A laptop with 8&nbsp;GB of RAM and no graphics card. That is the machine this was built for: roughly a $400 new or $150 refurbished Intel i5 or AMD Ryzen 5 running Ubuntu. The model uses about 1&nbsp;GB of memory while answering, so the rest of your machine stays usable.</p></details>
+
+    <details><summary>How fast is it?</summary>
+    <p>About 23 words per second on four CPU threads with no GPU. In practice an answer appears over a few seconds, the way a person typing quickly would produce it. It is not instant, and it does not need to be.</p></details>
+
+    <details><summary>How much does it cost?</summary>
+    <p>Nothing. The weights are public, the code is open, and there is no subscription or per-question charge. The only cost is the one-off 814&nbsp;MB download, which matters when mobile data is expensive, so it is designed to happen once and never again.</p></details>
+
+    <details><summary>What language does it speak?</summary>
+    <p>English. Nigerian Pidgin was built and tested, and then withdrawn. It worked in one model build and in the next it named <em>amala</em>, a food, as a maize pest. A capability that works one time in two is not a capability, so rather than ship it and hope, we removed the claim. It is the first thing we would rebuild properly.</p></details>
+
+    <details><summary>How do I install it?</summary>
+    <p>Two commands, shown in the <a href="#try">Try it</a> section above. You need <code>llama.cpp</code>, which is free and open source, and the model file. There is no installer, no account creation and no cloud setup.</p></details>
+
+    <h3 class="faq-cat">Trust and safety</h3>
+
+    <details><summary>Can I trust the advice?</summary>
+    <p>Treat it as a well-informed extension pamphlet that can hold a conversation, not as an agronomist. It is grounded in established extension practice and it is good at the common cases: identifying a pest from what you can see, spacing, timing, rotation, storage. It is weaker on unusual problems and it can drift into detail that sounds confident and is not. Where a real extension officer is available, they are the better answer, and the model is trained to say so.</p></details>
+
+    <details><summary>Will it tell me how much pesticide to use?</summary>
+    <p>No, deliberately. Application rates differ several times over between products on the same shelf, so a number from a model could mean you underdose and waste the spray, or overdose and harm yourself, the crop and whoever eats it. It is trained to point you at the rate printed on the product label and at your extension officer instead. This was a design rule from the first day, not an afterthought.</p></details>
+
+    <details><summary>What happens if I ask it something outside farming?</summary>
+    <p>It declines. Ask it about a child with a fever and it says it is not a medical professional, tells you to go to a clinic today, and says not to give medication without speaking to someone qualified. Getting a model this small to refuse rather than answer confidently took four attempts, and it is the part of this project we are most pleased with.</p></details>
+
+    <details><summary>What if it gives me a wrong answer?</summary>
+    <p>It will sometimes. The most common failure is that the first sentences are correct and then it adds a detail that sounds plausible and is not, which we call tail drift in the notes. The practical defence is the one good extension advice already uses: confirm before you spend. The model is trained to tell you what to look for so you can check in the field before buying anything.</p></details>
+
+    <h3 class="faq-cat">How it was built</h3>
+
+    <details><summary>Where did the training data come from?</summary>
+    <p>We wrote it. No dataset ships with this challenge, and the two fast options were both wrong: scraping the web, or having a large model generate the answers. Both put claims into training data that nobody can trace, and this domain is graded by agronomists who notice invented chemistry. Instead every training pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus. The final set is 642 conversations.</p></details>
+
+    <details><summary>Did you distil it from a bigger model?</summary>
+    <p>No. Nothing in the corpus was generated by another language model. That was a deliberate constraint and it cost us time, because hand-composed data is slower to produce than prompting a large model for ten thousand examples. It is also why we can say where every claim came from.</p></details>
+
+    <details><summary>Why Gemma 3 1B and not something larger?</summary>
+    <p>Because the scoring formula punishes size and we read it before writing code. Throughput above fifteen tokens a second earns nothing, and memory is charged linearly, so the instinct to run the biggest model that fits in 8&nbsp;GB is exactly backwards. We measured five candidates on the target profile. The 3B gives up fourteen and a half points before answering a single question. The chart above shows all five.</p></details>
+
+    <details><summary>Why Q4_K_M quantisation?</summary>
+    <p>It gives 814&nbsp;MB on disk and about 1&nbsp;GB in memory, which is the balance point between quality and the memory term in the score. Worth noting for anyone reproducing this: Gemma 3 1B has an embedding dimension of 1152, which is not divisible by 256, so <code>llama.cpp</code> falls back to <code>q5_0</code> and <code>q8_0</code> on several tensors. That is expected and is why the file is larger than a naive Q4 estimate.</p></details>
+
+    <details><summary>Why not use retrieval instead of fine-tuning?</summary>
+    <p>Retrieval would have been a reasonable design, and on a larger machine it might be the better one. We fine-tuned because the judged artefact is a single GGUF file run through <code>llama.cpp</code>, with no application layer around it, so a retrieval index would not be part of what gets scored. Given that constraint, the knowledge had to live in the weights.</p></details>
+
+    <details><summary>Can I reproduce your results?</summary>
+    <p>Yes, and that is the intent. The corpus generator, the training script and the Kaggle notebook that runs the whole pipeline end to end on a free T4 are all in the repository. The weights are public. Every number quoted on this site comes from a tool you can run yourself.</p></details>
+
+    <h3 class="faq-cat">Scoring and measurement</h3>
+
+    <details><summary>Why do you quote two different scores?</summary>
+    <p>Because one input to the formula depends on a rule we do not yet know. Throughput and memory are settled and identical either way, giving S_perf 100 and S_eff 85.5. The only variable is whether a ten point thermal penalty attaches to us, which depends on whether the organisers measure temperature from a participant's own telemetry or inside their audit sandbox. We quote 37.1, the figure we can prove on our hardware, and show 47.5 as what the same model earns on a machine that is not thermally constrained.</p></details>
+
+    <details><summary>Why does your laptop overheat?</summary>
+    <p>It is a 45&nbsp;W processor in a thin chassis. Under the profiler's 512-token prompt-processing pass it reaches 100&deg;C and throttles, and it does so from a cold start with the case elevated and a fan running. In ordinary generation at four threads, which is what a farmer asking questions actually produces, the same model peaks at 83&deg;C and takes no penalty. We also tried pinning to four cores to match the target machine and it made things worse: throughput fell below the fifteen token threshold and it throttled anyway.</p></details>
+
+    <details><summary>Are the numbers on this site measured or estimated?</summary>
+    <p>Measured, on the target profile, and the figures come from the official ADTC profiler rather than from our own tooling. Where the two disagreed we published the official one: our harness reported 0.88&nbsp;GB of memory and the profiler reported 1.01&nbsp;GB, so the site says 1.01. The raw <code>submission.json</code> is committed to the repository.</p></details>
+
+    <h3 class="faq-cat">The wider picture</h3>
+
+    <details><summary>Who is this actually for?</summary>
+    <p>Smallholder farmers and agricultural extension officers in West and Central Africa. Nigeria has roughly one extension officer for every few thousand farming households, and the districts with the fewest officers also tend to have the weakest connectivity. Those two facts together are the reason this runs offline rather than as an app.</p></details>
+
+    <details><summary>Is this meant to replace extension officers?</summary>
+    <p>No, and it would be a poor substitute. It is meant to be available on the days when no officer is, which for most smallholders is most days. The model is explicitly trained to defer to a human where the stakes are high, which is the opposite of trying to replace one.</p></details>
+
+    <details><summary>What is next?</summary>
+    <p>Three things. Fix the tail drift, which is the main remaining defect. Rebuild Nigerian Pidgin properly, with a corpus designed for it rather than a slice bolted on. And get it into a field, because a model like this is validated by an extension officer using it for a season, not by a benchmark.</p></details>
+
+    <details><summary>What licence is it under?</summary>
+    <p>The code and corpus are open in the repository. The base model is Gemma 3 1B, used under the <a href="https://ai.google.dev/gemma/terms">Gemma Terms of Use</a>, and inference runs on <code>llama.cpp</code>.</p></details>
+
+  </div>
 
   <footer>
     <p class="sig">AGBE — Nwokolo Victor Oluebubechukwu, Lagos.</p>
