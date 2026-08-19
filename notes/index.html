@@ -49,7 +49,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
     <img src="/img/score-curve.png" loading="lazy" alt="Stacked bar chart of five models by engineering points.">
     <figcaption><span class="pn">Figure 1</span> Points available before any human accuracy judging. Gemma 3 1B banks 47.5 of 50. Qwen2.5 3B banks 32.9, because it is the only candidate that misses the throughput bar outright and its 3.26 GB footprint collapses the memory term.</figcaption>
   </figure>
-  <p>The 3B concedes <strong>14.5 points</strong> before answering a single question, which it would have to win back by being twenty-nine accuracy points better. Gemma 3 1B was chosen over a 0.5B for under one point, and over Llama 3.2 1B at identical file size purely because it holds 0.88 GB in memory instead of 1.26 GB.</p>
+  <p>The 3B concedes <strong>14.5 points</strong> before answering a single question, which it would have to win back by being twenty-nine accuracy points better. Gemma 3 1B was chosen over a 0.5B for under one point, and over Llama 3.2 1B at identical file size purely because it holds 0.88 GB in memory instead of 1.26 GB on our own selection harness. The shipped figure elsewhere on this site is 1.01 GB, which is the official profiler's peak RSS for the final model: a different measurement of a different thing, and the one that counts for scoring.</p>
 
   <h2>03</h2>
   <p class="h2sub">A thermal result that runs backwards</p>
