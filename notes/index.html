@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AGBE — Build notes</title>
-<meta name="description" content="The engineering log behind AGBE: how the scoring formula picked the model, how the training corpus was built, and what six model builds taught us about what a 1B model can and cannot learn.">
+<meta name="description" content="The engineering log behind AGBE: how the scoring formula picked the model, how the training corpus was built, and what thirteen model builds taught us about what a 1B model can and cannot learn.">
 <link rel="icon" href="/img/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -20,7 +20,7 @@
   <header class="notes-head">
     <a class="back" href="/">← AGBE</a>
     <h1 class="notes-title">Build notes</h1>
-    <p class="notes-sub">What we measured, what broke, and what six model builds taught us about a 1B model's limits. Written as it happened, including the parts that did not work.</p>
+    <p class="notes-sub">What we measured, what broke, and what thirteen model builds taught us about a 1B model's limits. Written as it happened, including the parts that did not work.</p>
     <div class="hero-meta notes-meta">
       <span>Africa Deep Tech Challenge 2026</span>
       <span>Domain: Agriculture</span>
@@ -40,7 +40,7 @@ S<span class="hi">perf</span> = min(TPS ÷ 15.0, 1.0) × 100
 S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100
 P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre>
   </div>
-  <p>Two things fall straight out. Throughput above 15 tokens per second earns <em>nothing</em>, so surplus speed is waste. Memory is charged linearly, so every gigabyte is paid for. The instinct to run the largest model that fits in 8 GB is therefore backwards, and it is what most of a 1,598-strong field will do.</p>
+  <p>Two things fall straight out. Throughput above 15 tokens per second earns <em>nothing</em>, so surplus speed is waste. Memory is charged linearly, so every gigabyte is paid for. The instinct to run the largest model that fits in 8 GB is therefore backwards, and it is what most of a field of roughly 1,700 will do.</p>
 
   <h2>02</h2>
   <p class="h2sub">Measure five candidates, do not reason about them</p>
@@ -76,7 +76,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
         <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.1</strong></td></tr>
         <tr class="pick"><td>from participant telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
       </tbody>
-      <caption>Throughput and memory are identical in both rows and neither depends on temperature: 29.29 tok/s clears the cap more than twice over, and 1.01&nbsp;GB of a 7&nbsp;GB budget gives S_eff 85.5. Only the penalty moves. The judging FAQ describes a sandbox resource-capped to the Standard Laptop profile, and a cooled datacentre host does not throttle the way a thin laptop does, so the sandbox row is the likelier one. We quote the lower figure because it is the one we can prove: two profiler runs, one from 88&deg;C and one from a genuinely cold 44&deg;C, both peaked within a degree of 100&deg;C and both throttled. Starting cold does not help on this chassis, so the penalty is a property of the hardware rather than of the preparation.</caption>
+      <caption>Throughput and memory are identical in both rows and neither depends on temperature: 24.29 tok/s clears the cap comfortably, and 1.01&nbsp;GB of a 7&nbsp;GB budget gives S_eff 85.5. Only the penalty moves. The judging FAQ describes a sandbox resource-capped to the Standard Laptop profile, and a cooled datacentre host does not throttle the way a thin laptop does, so the sandbox row is the likelier one. We quote the lower figure because it is the one we can prove: three profiler runs, from 88&deg;C, 44&deg;C and 54&deg;C, all peaked at 99 to 100&deg;C and all throttled. Starting cold does not help on this chassis, so the penalty is a property of the hardware rather than of the preparation.</caption>
     </table>
   </div>
 
@@ -86,7 +86,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
   <p>Every pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus. No fabricated yields, no prices, and above all no agrochemical doses: where a real answer needs a rate, it points at the product label and the local extension officer.</p>
 
   <h2>05</h2>
-  <p class="h2sub">Six builds, and three different problems</p>
+  <p class="h2sub">Thirteen builds, and four different problems</p>
   <p>Every build was judged by reading its answers, not by its loss curve. The loss curve looked healthy for every failure below.</p>
 
   <div class="tablewrap">
@@ -98,9 +98,15 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
         <tr><td>v3</td><td>Stopped cross-topic mixing; coherent fact base</td><td>Refusal and timing correct. Pest wrong ("pod borers"); Pidgin answered in English.</td></tr>
         <tr><td>v4</td><td>42 fall-armyworm mentions, Pidgin to 6.7%</td><td>Invented "fall army weevil". More examples did not fix a confusion.</td></tr>
         <tr><td>v5</td><td><strong>rank 32</strong>, 5 epochs</td><td>Facts finally correct in English and Pidgin. But coherence broke: word salad, and it invented a pesticide called "dorabacite".</td></tr>
-        <tr class="pick"><td>v6</td><td>rank 32, back to 3 epochs</td><td>English facts and refusal both correct and stable. Tail degeneration persists, and Pidgin named a food ("amala") as a pest. Shipped, with the Pidgin claim withdrawn.</td></tr>
+        <tr><td>v6</td><td>rank 32, back to 3 epochs</td><td>English facts and refusal both correct and stable. Tail degeneration persists, and Pidgin named a food ("amala") as a pest. Pidgin claim withdrawn here.</td></tr>
+        <tr><td>v7&ndash;v8</td><td>Corrective exemplars from a 66-prompt battery</td><td>Closed a jailbreak that had produced a paediatric paracetamol dose. Then answered "when should I plant maize" with <strong>oil palm spacing</strong>.</td></tr>
+        <tr><td>v9</td><td>Sentence cap, planting calendars, 40 adversarial exemplars</td><td>Safest build made, 94% of 62 attacks withstood. But it <em>lost facts</em>: blossom end rot became "bacterial wilt".</td></tr>
+        <tr class="fail"><td>v10</td><td>4 epochs, to recover those facts</td><td>Recovered some, and began inventing vocabulary: "mortjacket" for coccidiosis. The v5 failure again. Reverted.</td></tr>
+        <tr><td>v11</td><td><strong>Symptom-first diagnosis</strong>, rare facts protected from the cap</td><td>Diagnosis 7/12 &rarr; 10/12. The corpus had only ever asked about <em>named</em> diseases, never about symptoms.</td></tr>
+        <tr class="fail"><td>v12</td><td>Contrast exemplars for confusable livestock pairs</td><td>Gained one livestock prompt, gave back safety leaks. Rejected.</td></tr>
+        <tr class="pick"><td><strong>v13</strong></td><td><strong>Bidirectional</strong> contrast, armyworm vs stem borer</td><td><strong>Shipped.</strong> 49/66, zero safety leaks, and it names fall armyworm on our own submitted prompt where v11 and v12 both said stem borer.</td></tr>
       </tbody>
-      <caption>Four corpus iterations preceded any change to the training configuration. That was the mistake: rank was the missing variable.</caption>
+      <caption>Four corpus iterations preceded any change to the training configuration, and rank was the missing variable the whole time. Seven builds later the same shape recurred: we were counting conversations when what the model actually sees is sentences.</caption>
     </table>
   </div>
 
@@ -124,7 +130,11 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
       </ul>
     </div>
   </div>
-  <p><strong>Coherence</strong> is a third axis again, and it degrades with over-training. v5 recalled facts and then filled the remaining tokens with fluent nonsense once it exhausted what it had learned. Adding examples cannot fix that, and neither can adding capacity.</p>
+  <p><strong>Coherence</strong> is a third axis, and it degrades with over-training. v5 recalled facts and then filled the remaining tokens with fluent nonsense once it exhausted what it had learned. Adding examples cannot fix that, and neither can adding capacity. v10 proved the point twice by inventing "mortjacket" for coccidiosis five builds later.</p>
+
+  <p><strong>Sentence diversity</strong> is a fourth axis, and we were not measuring it for six more builds. An audit after v8 found 1,020 conversations built from only <strong>900 unique sentences</strong>: 5.6 reuses each, and one sentence appearing 40 times. At three epochs the model saw each one about seventeen times and memorised it as a unit, then emitted those units by topic rather than by question. That is how "roughly 143 palms per hectare", an oil palm figure, ended up inside an answer about maize. <strong>Growing the corpus from 642 to 1,020 conversations made the model worse</strong>, because the count grew and the diversity did not.</p>
+
+  <p>The last of these is the subtlest. Contrast exemplars fix confusions &mdash; naming the alternative and rejecting it worked where volume had failed. But a contrast teaches a <em>direction</em>, not a boundary. Five examples reading "that is stem borer, not armyworm" and none of the reverse left v12 answering the textbook fall armyworm description with "that is stem borer", on our own submitted test prompt. An unbalanced contrast relocates a bias rather than removing it, and the corpus builder now audits every such pair for its opposite.</p>
 
   <blockquote class="pull">
     A model that invents a pesticide name is more dangerous than one that admits it does not know. That is why refusal was trained first and guarded hardest.
@@ -132,7 +142,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
 
   <h2>05b</h2>
   <p class="h2sub">Knowing when to stop, and what to withdraw</p>
-  <p>Six builds in, English diagnosis and refusal behaviour are reliable. Nigerian Pidgin is not. It was correct in v5 and in v6 it named <em>amala</em>, a food, as a maize pest. Adding more Pidgin examples is exactly what we tried between v3 and v4 for pest naming, and it produced the invented "fall army weevil" rather than a fix.</p>
+  <p>By the sixth build, English diagnosis and refusal behaviour were reliable. Nigerian Pidgin is not. It was correct in v5 and in v6 it named <em>amala</em>, a food, as a maize pest. Adding more Pidgin examples is exactly what we tried between v3 and v4 for pest naming, and it produced the invented "fall army weevil" rather than a fix.</p>
   <p>So the Pidgin claim was withdrawn from <code>language_scope</code> rather than shipped and hoped for. The African use-case claim is unchanged, because it never rested on language: it rests on the domain being cassava mosaic, striga, aflatoxin, Newcastle disease and harmattan planting windows.</p>
   <p>A capability that works in one build and invents food names in the next is not a capability. Claiming it would have been the easiest thing on this page to get away with, and the fastest way to lose a judge who speaks the language.</p>
 
