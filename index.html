@@ -126,7 +126,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
 
   <figure class="plate chart">
     <img src="/img/score-curve.png" loading="lazy"
-         alt="Stacked bar chart comparing five models. Gemma 3 1B banks 47.5 of 50 engineering points; Qwen2.5 3B only 32.9.">
+         alt="Stacked bar chart comparing five candidate models at selection time. Gemma 3 1B banks 47.5 of 50 engineering points on our own harness; Qwen2.5 3B only 32.9. The official profiler later measured the shipped model at 47.1.">
     <figcaption><span class="pn">Figure 1</span> Points available before any human accuracy judging. The 3B is the instructive row: it is the only candidate that misses the throughput bar outright, and its 3.26 GB footprint collapses the memory term. It concedes 14.5 points before answering a single question.</figcaption>
   </figure>
 
@@ -143,8 +143,9 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
 
   <h2>Honest status</h2>
   <p class="h2sub">Where this actually is, as of today.</p>
-  <p>The engineering is measured: 814 MB on disk, 1.01 GB peak memory, 23.2 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
-  <p>One number depends on a rule we do not yet know. Our own harness measured generation at four threads, peaked at 83&deg;C and took no thermal penalty, giving 47.5 of 50. The official profiler also runs a heavy prompt-processing pass, and on this laptop that reaches 100&deg;C and throttles even from a cold start with a fan running, which is a ten point penalty and gives 37.1.</p>
+  <p>The engineering is measured: 814 MB on disk, 1.01 GB peak memory, 24.29 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
+  <p>Throughput and memory are settled and neither depends on temperature: <strong>29.29 tokens per second</strong> clears the fifteen token cap outright for a full 100 on S_perf, and <strong>1.01&nbsp;GB</strong> of the 7&nbsp;GB budget gives 85.5 on S_eff. That is <strong>47.1 of the 50 engineering points</strong>.</p>
+  <p>One number depends on a rule we do not yet know. The official profiler runs a heavy 512-token prompt-processing pass on top of generation, and on this i7-10850H that reaches 100&deg;C and throttles. We tested whether preparation helps: one run from 88&deg;C and one from a genuinely cold 44&deg;C peaked within a degree of each other and both throttled. If the penalty is taken from our telemetry it is 37.1; if the audit re-measures in its own sandbox, as the profiler's schema implies when it notes that cloud hosts usually report no thermal sensor at all, it is 47.1.</p>
 
   <div class="tablewrap">
     <table>
@@ -153,7 +154,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
         <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.5</strong></td></tr>
         <tr class="pick"><td>from our own telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
       </tbody>
-      <caption>Both figures are honest. Throughput and memory are identical either way: 23.2 tok/s clears the 15 tok/s cap outright, and the model holds 1.01&nbsp;GB of the 7&nbsp;GB budget. Only the penalty differs. We quote 37.1, the figure we can prove on our own hardware.</caption>
+      <caption>Both figures are honest. Throughput and memory are identical either way: 24.29 tok/s clears the 15 tok/s cap outright, and the model holds 1.01&nbsp;GB of the 7&nbsp;GB budget. Only the penalty differs. We quote 37.1, the figure we can prove on our own hardware.</caption>
     </table>
   </div>
 
@@ -211,7 +212,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
     <h3 class="faq-cat">How it was built</h3>
 
     <details><summary>Where did the training data come from?</summary>
-    <p>We wrote it. No dataset ships with this challenge, and the two fast options were both wrong: scraping the web, or having a large model generate the answers. Both put claims into training data that nobody can trace, and this domain is graded by agronomists who notice invented chemistry. Instead every training pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus. The final set is 642 conversations.</p></details>
+    <p>We wrote it. No dataset ships with this challenge, and the two fast options were both wrong: scraping the web, or having a large model generate the answers. Both put claims into training data that nobody can trace, and this domain is graded by agronomists who notice invented chemistry. Instead every training pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus. The final set is 956 conversations.</p></details>
 
     <details><summary>Did you distil it from a bigger model?</summary>
     <p>No. Nothing in the corpus was generated by another language model. That was a deliberate constraint and it cost us time, because hand-composed data is slower to produce than prompting a large model for ten thousand examples. It is also why we can say where every claim came from.</p></details>

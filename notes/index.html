@@ -73,10 +73,10 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
     <table>
       <thead><tr><th>If P_thermal is judged&hellip;</th><th>S_perf</th><th>S_eff</th><th>P_thermal</th><th>Total</th></tr></thead>
       <tbody>
-        <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.5</strong></td></tr>
+        <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.1</strong></td></tr>
         <tr class="pick"><td>from participant telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
       </tbody>
-      <caption>Throughput and memory are identical in both rows and neither depends on temperature: 23.24 tok/s clears the cap, and 1.01&nbsp;GB of a 7&nbsp;GB budget gives S_eff 85.5. Only the penalty moves. The judging FAQ describes a sandbox resource-capped to the Standard Laptop profile, and a cooled datacentre host does not throttle the way a thin laptop does, so the sandbox row is the likelier one. We quote the lower figure because it is the one we can prove.</caption>
+      <caption>Throughput and memory are identical in both rows and neither depends on temperature: 29.29 tok/s clears the cap more than twice over, and 1.01&nbsp;GB of a 7&nbsp;GB budget gives S_eff 85.5. Only the penalty moves. The judging FAQ describes a sandbox resource-capped to the Standard Laptop profile, and a cooled datacentre host does not throttle the way a thin laptop does, so the sandbox row is the likelier one. We quote the lower figure because it is the one we can prove: two profiler runs, one from 88&deg;C and one from a genuinely cold 44&deg;C, both peaked within a degree of 100&deg;C and both throttled. Starting cold does not help on this chassis, so the penalty is a property of the hardware rather than of the preparation.</caption>
     </table>
   </div>
 
