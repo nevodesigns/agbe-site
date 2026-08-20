@@ -112,6 +112,61 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
     </div>
   </div>
 
+  <h2>The challenge</h2>
+  <p class="h2sub">What was actually asked for, and how it is marked.</p>
+  <p>The <strong>Africa Deep Tech Challenge 2026</strong>, run by the Africa Deep Tech Foundation, asks for a small language model that runs <em>offline</em> on a budget laptop and is genuinely useful in one domain. We entered <strong>Agriculture</strong>, one of seven tracks, against a field of about 1,700 participants.</p>
+
+  <div class="tablewrap">
+    <table>
+      <tbody>
+        <tr><td>Target machine</td><td>8&nbsp;GB RAM, integrated graphics, no GPU, Ubuntu 22.04</td></tr>
+        <tr><td>Must run</td><td>Fully offline, through llama.cpp, from a bare GGUF</td></tr>
+        <tr><td>Judged on</td><td>Four prompts: two we submit, two the organisers keep hidden</td></tr>
+        <tr><td>Our track</td><td>Agriculture, English, African Use Case claimed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The hidden prompts are the interesting constraint. They exist to catch a model tuned to its own submitted examples, so there is no way to prepare for them except to be broadly competent. That single rule shaped the whole corpus.</p>
+
+  <figure class="plate">
+    <svg viewBox="0 0 720 200" role="img" width="100%"
+         aria-label="Where the marks sit. Accuracy is 50 points and judged by humans reading answers. Throughput is 30 points but caps at 15 tokens per second. Memory is 20 points and charged linearly against a 7 gigabyte budget. A thermal penalty removes 10 points if the processor throttles.">
+      <defs><style>
+        .lbl{font:600 13.5px var(--sans);fill:var(--ink)}
+        .sub{font:400 11.5px var(--sans);fill:var(--ink-soft)}
+        .num{font:700 21px var(--serif);fill:var(--ink)}
+        .pen{font:700 16px var(--serif);fill:var(--ochre)}
+      </style></defs>
+
+      <text class="lbl" x="0" y="14">Where the 100 marks sit</text>
+      <text class="sub" x="0" y="32">Half is a human reading the answer. We could only engineer the other half.</text>
+
+      <!-- Numbers and labels sit ABOVE the bars, using the body ink colour, so
+           they stay legible in both themes no matter how pale the bar behind
+           them is. Text inside the lightest bar failed contrast in light mode. -->
+      <text class="num" x="0"   y="66">50</text><text class="lbl" x="34"  y="66">Accuracy</text>
+      <text class="num" x="356" y="66">30</text><text class="lbl" x="390" y="66">Throughput</text>
+      <text class="num" x="571" y="66">20</text><text class="lbl" x="605" y="66">Memory</text>
+
+      <rect x="0"   y="78" width="352" height="26" rx="2" fill="var(--green)"/>
+      <rect x="356" y="78" width="211" height="26" rx="2" fill="var(--green)" opacity=".66"/>
+      <rect x="571" y="78" width="141" height="26" rx="2" fill="var(--green)" opacity=".42"/>
+
+      <text class="sub" x="0"   y="124">Judged by humans, on four prompts</text>
+      <text class="sub" x="356" y="124">Caps at 15 tok/s</text>
+      <text class="sub" x="571" y="124">Linear, 7&#160;GB budget</text>
+
+      <line x1="0" y1="146" x2="712" y2="146" stroke="var(--rule)" stroke-width="1"/>
+      <rect x="0" y="158" width="96" height="30" rx="2" fill="none"
+            stroke="var(--ochre)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text class="pen" x="16" y="179">&#8722;10</text>
+      <text class="sub" x="112" y="171">Thermal penalty, if the processor throttles or passes 85&#176;C.</text>
+      <text class="sub" x="112" y="186">Applied after everything else, so it is the cheapest ten points to lose.</text>
+    </svg>
+    <figcaption><span class="pn">Figure 1</span> The two shaded bars are the only parts a developer controls directly, and the second one stops paying at 15 tokens per second. Reading that before writing any code is what pointed us at a 1B model.</figcaption>
+  </figure>
+
   <h2>Why a 1B model, not the biggest that fits</h2>
   <p class="h2sub">The scoring formula tells you what to build, if you read it.</p>
   <div class="figbox">
@@ -127,7 +182,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
   <figure class="plate chart">
     <img src="/img/score-curve.png" loading="lazy"
          alt="Stacked bar chart comparing five candidate models at selection time. Gemma 3 1B banks 47.5 of 50 engineering points on our own harness; Qwen2.5 3B only 32.9. The official profiler later measured the shipped model at 47.1.">
-    <figcaption><span class="pn">Figure 1</span> Points available before any human accuracy judging. The 3B is the instructive row: it is the only candidate that misses the throughput bar outright, and its 3.26 GB footprint collapses the memory term. It concedes 14.5 points before answering a single question.</figcaption>
+    <figcaption><span class="pn">Figure 2</span> Points available before any human accuracy judging. The 3B is the instructive row: it is the only candidate that misses the throughput bar outright, and its 3.26 GB footprint collapses the memory term. It concedes 14.5 points before answering a single question.</figcaption>
   </figure>
 
   <h2>The corpus</h2>
