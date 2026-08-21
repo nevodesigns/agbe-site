@@ -36,11 +36,11 @@
     <pre class="formula">
 S<span class="hi">total</span> = 0.50·S<span class="hi">acc</span> + 0.30·S<span class="hi">perf</span> + 0.20·S<span class="hi">eff</span> − P<span class="hi">thermal</span>
 
-S<span class="hi">perf</span> = min(TPS ÷ 15.0, 1.0) × 100
+S<span class="hi">perf</span> = 100 × (TPS_act ÷ TPS_max)
 S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100
 P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre>
   </div>
-  <p>Two things fall straight out. Throughput above 15 tokens per second earns <em>nothing</em>, so surplus speed is waste. Memory is charged linearly, so every gigabyte is paid for. The instinct to run the largest model that fits in 8 GB is therefore backwards, and it is what most of a field of roughly 1,700 will do.</p>
+  <p>Two things fall out, and one of them we initially read wrong. Memory is charged linearly, so every gigabyte is paid for. Throughput we first took to be capped at 15 tok/s, which would make surplus speed worthless; the official formula is <code>100 &times; (TPS<sub>act</sub> &divide; TPS<sub>max</sub>)</code> with 15.0 published as <em>provisional</em>, so the denominator is the fastest submission and extra speed keeps paying. Memory is charged linearly, so every gigabyte is paid for. The instinct to run the largest model that fits in 8 GB is therefore backwards, and it is what most of a field of roughly 1,700 will do.</p>
 
   <h2>02</h2>
   <p class="h2sub">Measure five candidates, do not reason about them</p>

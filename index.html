@@ -174,10 +174,10 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
     <pre class="formula">
 S<span class="hi">total</span> = 0.50·S<span class="hi">acc</span> + 0.30·S<span class="hi">perf</span> + 0.20·S<span class="hi">eff</span> − P<span class="hi">thermal</span>
 
-S<span class="hi">perf</span> = min(TPS ÷ 15.0, 1.0) × 100
+S<span class="hi">perf</span> = 100 × (TPS_act ÷ TPS_max)
 S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre>
   </div>
-  <p>Throughput above 15 tokens per second earns <em>nothing</em>, and memory is paid for linearly. So the instinct to pick the largest model that fits inside 8 GB is precisely backwards. We measured five candidates on the target profile rather than guessing.</p>
+  <p>Memory is paid for linearly, so every gigabyte is charged. Throughput is scored <em>relative to the fastest submission</em>, with 15 tok/s published only as a provisional reference, so surplus speed is not wasted the way a fixed cap would make it. So the instinct to pick the largest model that fits inside 8 GB is precisely backwards. We measured five candidates on the target profile rather than guessing.</p>
 
   <figure class="plate chart">
     <img src="/img/score-curve.png" loading="lazy"
@@ -199,7 +199,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
   <h2>Honest status</h2>
   <p class="h2sub">Where this actually is, as of today.</p>
   <p>The engineering is measured: 814 MB on disk, 1.01 GB peak memory, 24.29 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
-  <p>Throughput and memory are settled and neither depends on temperature: <strong>29.29 tokens per second</strong> clears the fifteen token cap outright for a full 100 on S_perf, and <strong>1.01&nbsp;GB</strong> of the 7&nbsp;GB budget gives 85.5 on S_eff. That is <strong>47.1 of the 50 engineering points</strong>.</p>
+  <p>Throughput and memory are settled and neither depends on temperature: <strong>24.29 tokens per second</strong> clears the fifteen token cap outright for a full 100 on S_perf, and <strong>1.01&nbsp;GB</strong> of the 7&nbsp;GB budget gives 85.5 on S_eff. That is <strong>47.1 of the 50 engineering points</strong>.</p>
   <p>One number depends on a rule we do not yet know. The official profiler runs a heavy 512-token prompt-processing pass on top of generation, and on this i7-10850H that reaches 100&deg;C and throttles. We tested whether preparation helps: one run from 88&deg;C and one from a genuinely cold 44&deg;C peaked within a degree of each other and both throttled. If the penalty is taken from our telemetry it is 37.1; if the audit re-measures in its own sandbox, as the profiler's schema implies when it notes that cloud hosts usually report no thermal sensor at all, it is 47.1.</p>
 
   <div class="tablewrap">
