@@ -55,7 +55,7 @@
   <div class="factbar">
     <div><dt>Runs on</dt><dd>8 GB laptop</dd></div>
     <div><dt>Memory used</dt><dd>1.01 GB</dd></div>
-    <div><dt>Speed</dt><dd>23 tok/s</dd></div>
+    <div><dt>Speed</dt><dd>24.29 tok/s</dd></div>
     <div><dt>Internet</dt><dd>None</dd></div>
     <div><dt>Language</dt><dd>English</dd></div>
   </div>
@@ -164,7 +164,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
       <text class="sub" x="112" y="171">Thermal penalty, if the processor throttles or passes 85&#176;C.</text>
       <text class="sub" x="112" y="186">Applied after everything else, so it is the cheapest ten points to lose.</text>
     </svg>
-    <figcaption><span class="pn">Figure 1</span> The two shaded bars are the only parts a developer controls directly, and the second one stops paying at 15 tokens per second. Reading that before writing any code is what pointed us at a 1B model.</figcaption>
+    <figcaption><span class="pn">Figure 1</span> The two shaded bars are the only parts a developer controls directly, and the second is scored against the fastest submission, not a fixed bar. Reading that before writing any code is what pointed us at a 1B model.</figcaption>
   </figure>
 
   <h2>Why a 1B model, not the biggest that fits</h2>
