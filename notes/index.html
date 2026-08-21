@@ -66,7 +66,12 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
       <caption>Fewer threads ran hotter. With only two or three cores loaded the CPU boosts toward its single-core turbo ceiling and per-core temperature spikes. At four or more the all-core power limit caps clocks, spreading the same work cooler. More parallelism, less heat, more throughput.</caption>
     </table>
   </div>
-  <p>Because <code>S_perf</code> caps at 15 tok/s, surplus throughput can be traded for thermal headroom at no cost to the score. In our own harness that recovered ten points.</p>
+  <p>At the time we read <code>S_perf</code> as capped at 15 tok/s, which made surplus
+  throughput look free to trade for thermal headroom. In our own harness that appeared
+  to recover ten points. <strong>The cap was a misreading</strong>: the published formula is
+  <code>100 &times; (TPS<sub>act</sub> &divide; TPS<sub>max</sub>)</code>, so throughput is scored against the
+  fastest submission and surplus speed is never worthless. The thermal measurements below
+  stand; the trade we thought we were making does not.</p>
   <p><strong>The official profiler then took them back.</strong> It runs a 512-token prompt-processing pass as well as generation, a much heavier sustained load, and on this i7-10850H that hits 100&deg;C and throttles from a 55&deg;C cold start with the case elevated and a fan running. Pinning to four physical cores, since the Standard Laptop is a four-core machine, made it worse: throughput fell to 14.88 tok/s, below the fifteen token threshold, and it throttled anyway.</p>
 
   <div class="tablewrap">
