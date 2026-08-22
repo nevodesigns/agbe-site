@@ -199,7 +199,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
   <h2>Honest status</h2>
   <p class="h2sub">Where this actually is, as of today.</p>
   <p>The engineering is measured: 814 MB on disk, 1,039 MB peak memory, 24.29 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
-  <p>Throughput and memory are settled and neither depends on temperature: <strong>24.29 tokens per second</strong> clears the fifteen token cap outright for a full 100 on S_perf, and <strong>1.01&nbsp;GB</strong> of the 7&nbsp;GB budget gives 85.5 on S_eff. That is <strong>47.1 of the 50 engineering points</strong>.</p>
+  <p>Throughput and memory are settled and neither depends on temperature: <strong>24.29 tokens per second</strong> and <strong>1,039&nbsp;MB</strong> of the 7&nbsp;GB budget, which gives 85.5 on S_eff. Against the provisional 15 tok/s reference that is <strong>47.1 of the 50 engineering points</strong>, but S_perf is scored relative to the fastest submission, so our share of it depends on what everyone else ships.</p>
   <p>One number depends on a rule we do not yet know. The official profiler runs a heavy 512-token prompt-processing pass on top of generation, and on this i7-10850H that reaches 100&deg;C and throttles. We tested whether preparation helps: one run from 88&deg;C and one from a genuinely cold 44&deg;C peaked within a degree of each other and both throttled. If the penalty is taken from our telemetry it is 37.1; if the audit re-measures in its own sandbox, as the profiler's schema implies when it notes that cloud hosts usually report no thermal sensor at all, it is 47.1.</p>
 
   <div class="tablewrap">
@@ -209,7 +209,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
         <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.5</strong></td></tr>
         <tr class="pick"><td>from our own telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
       </tbody>
-      <caption>Both figures are honest. Throughput and memory are identical either way: 24.29 tok/s clears the 15 tok/s cap outright, and the model holds 1.01&nbsp;GB of the 7&nbsp;GB budget. Only the penalty differs. We quote 37.1, the figure we can prove on our own hardware.</caption>
+      <caption>Both figures are honest. Throughput and memory are identical either way: 24.29 tok/s and 1,039&nbsp;MB of the 7&nbsp;GB budget. Only the penalty differs. We quote 37.1, the figure we can prove on our own hardware.</caption>
     </table>
   </div>
 
@@ -293,7 +293,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
     <p>It is a 45&nbsp;W processor in a thin chassis. Under the profiler's 512-token prompt-processing pass it reaches 100&deg;C and throttles, and it does so from a cold start with the case elevated and a fan running. In ordinary generation at four threads, which is what a farmer asking questions actually produces, the same model peaks at 83&deg;C and takes no penalty. We also tried pinning to four cores to match the target machine and it made things worse: throughput fell below the fifteen token threshold and it throttled anyway.</p></details>
 
     <details><summary>Are the numbers on this site measured or estimated?</summary>
-    <p>Measured, on the target profile, and the figures come from the official ADTC profiler rather than from our own tooling. Where the two disagreed we published the official one: our harness reported 0.88&nbsp;GB of memory and the profiler reported 1.01&nbsp;GB, so the site says 1.01. The raw <code>submission.json</code> is committed to the repository.</p></details>
+    <p>Measured, on the target profile, and the figures come from the official ADTC profiler rather than from our own tooling. Where the two disagreed we published the official one: our harness reported 0.88&nbsp;GB of memory and the profiler reported 1,039&nbsp;MB, so the site quotes the profiler. The raw <code>submission.json</code> is committed to the repository.</p></details>
 
     <h3 class="faq-cat">The wider picture</h3>
 
