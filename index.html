@@ -121,7 +121,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
       <tbody>
         <tr><td>Target machine</td><td>8&nbsp;GB RAM, integrated graphics, no GPU, Ubuntu 22.04</td></tr>
         <tr><td>Must run</td><td>Fully offline, through llama.cpp, from a bare GGUF</td></tr>
-        <tr><td>Judged on</td><td>The two prompts we submit, plus hidden prompts the organisers generate</td></tr>
+        <tr><td>Judged on</td><td>Submitted and hidden prompts evaluated by the organisers</td></tr>
         <tr><td>Our track</td><td>Agriculture, English, African Use Case claimed</td></tr>
       </tbody>
     </table>
@@ -153,7 +153,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
       <rect x="356" y="78" width="211" height="26" rx="2" fill="var(--green)" opacity=".66"/>
       <rect x="571" y="78" width="141" height="26" rx="2" fill="var(--green)" opacity=".42"/>
 
-      <text class="sub" x="0"   y="124">Judged by humans, on four prompts</text>
+      <text class="sub" x="0"   y="124">Judged by humans, on submitted and hidden prompts</text>
       <text class="sub" x="356" y="124">Relative to the fastest entry</text>
       <text class="sub" x="571" y="124">Linear, 7&#160;GB budget</text>
 
@@ -206,15 +206,15 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
     <table>
       <thead><tr><th>If the thermal penalty is judged&hellip;</th><th>S_perf</th><th>S_eff</th><th>P_thermal</th><th>Total</th></tr></thead>
       <tbody>
-        <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.5</strong></td></tr>
+        <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.1</strong></td></tr>
         <tr class="pick"><td>from our own telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
       </tbody>
       <caption>Both figures are honest. Throughput and memory are identical either way: 24.29 tok/s and 1,039&nbsp;MB of the 7&nbsp;GB budget. Only the penalty differs. We quote 37.1, the figure we can prove on our own hardware.</caption>
     </table>
   </div>
 
-  <p>The penalty is a property of this laptop rather than the model. An i7-10850H is a 45&nbsp;W part in a thin chassis; under the profiler's 512-token prompt pass it throttles, while the same model in ordinary generation at four threads peaks at 83&deg;C and does not. Pinning to four cores to match the target machine made it worse, not better: throughput fell below the fifteen token threshold and it throttled anyway. The judging FAQ describes a sandbox &quot;resource-capped to match the Standard Laptop profile&quot;, and a properly cooled datacentre host would not throttle under the same load, so the sandbox figure is likely the higher one. We have asked the organisers which rule applies.</p>
-  <p>The answer quality is still being evaluated. An earlier build failed its own smoke test badly enough to be unusable: it had learned the shape of our training answers rather than the agronomy in them, and it opened a maize pest question with a sentence about storage before inventing a fungal infection. That was a fault in how the corpus was generated, not in the model or the pipeline. The corpus was rebuilt from scratch, the retrained model is published, and it is being tested now. Whatever those tests say will be reported here.</p>
+  <p>The penalty is a property of this laptop rather than the model. An i7-10850H is a 45&nbsp;W part in a thin chassis; under the profiler's 512-token prompt pass it throttles, while the same model in ordinary generation at four threads peaks at 83&deg;C and does not. Pinning to four cores to match the target machine made it worse, not better: throughput fell below the provisional 15 tok/s reference and it throttled anyway. The judging FAQ describes a sandbox &quot;resource-capped to match the Standard Laptop profile&quot;, and a properly cooled datacentre host would not throttle under the same load, so the sandbox figure is likely the higher one. We have asked the organisers which rule applies.</p>
+  <p>The final v13 build was evaluated on a 66-prompt behaviour battery and a 92-prompt hostile battery: <strong>49/66</strong> overall, <strong>79/92</strong> hostile, <strong>56/62</strong> attacks withstood, and <strong>zero safety leaks</strong>.</p>
 
   <blockquote class="pull">
     A model like this is only ever validated in a field, not in a benchmark.
@@ -232,45 +232,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
 
     <h3 class="faq-cat">Using it</h3>
 
-    <details><summary>Does it really work with no internet?</summary>
-    <p>Yes, and that is the whole point rather than a feature added at the end. You download an 814&nbsp;MB file once. After that the model runs on your own processor and never contacts a server. No API key, no account, no sign-in, no data charges. You can disconnect the wifi, put the laptop in aeroplane mode, or take it somewhere with no signal at all, and it answers exactly the same.</p></details>
-
-    <details><summary>What computer do I need?</summary>
-    <p>A laptop with 8&nbsp;GB of RAM and no graphics card. That is the machine this was built for: roughly a $400 new or $150 refurbished Intel i5 or AMD Ryzen 5 running Ubuntu. The model uses about 1&nbsp;GB of memory while answering, so the rest of your machine stays usable.</p></details>
-
-    <details><summary>How fast is it?</summary>
-    <p>About 23 words per second on four CPU threads with no GPU. In practice an answer appears over a few seconds, the way a person typing quickly would produce it. It is not instant, and it does not need to be.</p></details>
-
-    <details><summary>How much does it cost?</summary>
-    <p>Nothing. The weights are public, the code is open, and there is no subscription or per-question charge. The only cost is the one-off 814&nbsp;MB download, which matters when mobile data is expensive, so it is designed to happen once and never again.</p></details>
-
-    <details><summary>What language does it speak?</summary>
-    <p>English. Nigerian Pidgin was built and tested, and then withdrawn. It worked in one model build and in the next it named <em>amala</em>, a food, as a maize pest. A capability that works one time in two is not a capability, so rather than ship it and hope, we removed the claim. It is the first thing we would rebuild properly.</p></details>
-
-    <details><summary>How do I install it?</summary>
-    <p>Two commands, shown in the <a href="#try">Try it</a> section above. You need <code>llama.cpp</code>, which is free and open source, and the model file. There is no installer, no account creation and no cloud setup.</p></details>
-
-    <h3 class="faq-cat">Trust and safety</h3>
-
-    <details><summary>Can I trust the advice?</summary>
-    <p>Treat it as a well-informed extension pamphlet that can hold a conversation, not as an agronomist. It is grounded in established extension practice and it is good at the common cases: identifying a pest from what you can see, spacing, timing, rotation, storage. It is weaker on unusual problems and it can drift into detail that sounds confident and is not. Where a real extension officer is available, they are the better answer, and the model is trained to say so.</p></details>
-
-    <details><summary>Will it tell me how much pesticide to use?</summary>
-    <p>No, deliberately. Application rates differ several times over between products on the same shelf, so a number from a model could mean you underdose and waste the spray, or overdose and harm yourself, the crop and whoever eats it. It is trained to point you at the rate printed on the product label and at your extension officer instead. This was a design rule from the first day, not an afterthought.</p></details>
-
-    <details><summary>What happens if I ask it something outside farming?</summary>
-    <p>It declines. Ask it about a child with a fever and it says it is not a medical professional, tells you to go to a clinic today, and says not to give medication without speaking to someone qualified. Getting a model this small to refuse rather than answer confidently took four attempts, and it is the part of this project we are most pleased with.</p></details>
-
-    <details><summary>What if it gives me a wrong answer?</summary>
-    <p>It will sometimes. The most common failure is that the first sentences are correct and then it adds a detail that sounds plausible and is not, which we call tail drift in the notes. The practical defence is the one good extension advice already uses: confirm before you spend. The model is trained to tell you what to look for so you can check in the field before buying anything.</p></details>
-
-    <h3 class="faq-cat">How it was built</h3>
-
-    <details><summary>Where did the training data come from?</summary>
-    <p>We wrote it. No dataset ships with this challenge, and the two fast options were both wrong: scraping the web, or having a large model generate the answers. Both put claims into training data that nobody can trace, and this domain is graded by agronomists who notice invented chemistry. Instead every training pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus. The final set is 956 conversations.</p></details>
-
-    <details><summary>Did you distil it from a bigger model?</summary>
-    <p>No. Nothing in the corpus was generated by another language model. That was a deliberate constraint and it cost us time, because hand-composed data is slower to produce than prompting a large model for ten thousand examples. It is also why we can say where every claim came from.</p></details>
+    
 
     <details><summary>Why Gemma 3 1B and not something larger?</summary>
     <p>Because the scoring formula punishes size and we read it before writing code. Memory is charged linearly against a 7&nbsp;GB budget, so every gigabyte is paid for, and a 3B model concedes points before it answers anything. Throughput is scored relative to the fastest submission rather than against a fixed bar, which we initially misread as a cap; the technical notes record what that misreading cost us.</p></details>
@@ -287,10 +249,10 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
     <h3 class="faq-cat">Scoring and measurement</h3>
 
     <details><summary>Why do you quote two different scores?</summary>
-    <p>Because one input to the formula depends on a rule we do not yet know. Throughput and memory are settled and identical either way, giving S_perf 100 and S_eff 85.5. The only variable is whether a ten point thermal penalty attaches to us, which depends on whether the organisers measure temperature from a participant's own telemetry or inside their audit sandbox. We quote 37.1, the figure we can prove on our hardware, and show 47.5 as what the same model earns on a machine that is not thermally constrained.</p></details>
+    <p>Because one input to the formula depends on a rule we do not yet know. Throughput and memory are settled and identical either way, giving S_perf 100 and S_eff 85.5 at the provisional 15 tok/s reference; the final S_perf depends on the fastest submission. The only variable is whether a ten point thermal penalty attaches to us, which depends on whether the organisers measure temperature from a participant's own telemetry or inside their audit sandbox. We quote 37.1, the figure we can prove on our hardware, and show 47.1 as what the same model earns on a machine that is not thermally constrained.</p></details>
 
     <details><summary>Why does your laptop overheat?</summary>
-    <p>It is a 45&nbsp;W processor in a thin chassis. Under the profiler's 512-token prompt-processing pass it reaches 100&deg;C and throttles, and it does so from a cold start with the case elevated and a fan running. In ordinary generation at four threads, which is what a farmer asking questions actually produces, the same model peaks at 83&deg;C and takes no penalty. We also tried pinning to four cores to match the target machine and it made things worse: throughput fell below the fifteen token threshold and it throttled anyway.</p></details>
+    <p>It is a 45&nbsp;W processor in a thin chassis. Under the profiler's 512-token prompt-processing pass it reaches 100&deg;C and throttles, and it does so from a cold start with the case elevated and a fan running. In ordinary generation at four threads, which is what a farmer asking questions actually produces, the same model peaks at 83&deg;C and takes no penalty. We also tried pinning to four cores to match the target machine and it made things worse: throughput fell below the provisional 15 tok/s reference and it throttled anyway.</p></details>
 
     <details><summary>Are the numbers on this site measured or estimated?</summary>
     <p>Measured, on the target profile, and the figures come from the official ADTC profiler rather than from our own tooling. Where the two disagreed we published the official one: our harness reported 0.88&nbsp;GB of memory and the profiler reported 1,039&nbsp;MB, so the site quotes the profiler. The raw <code>submission.json</code> is committed to the repository.</p></details>
