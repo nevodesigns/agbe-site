@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AGBE — Build notes</title>
+<title>AGBE build notes</title>
 <meta name="description" content="The engineering log behind AGBE: how the scoring formula picked the model, how the training corpus was built, and what thirteen model builds taught us about what a 1B model can and cannot learn.">
 <link rel="icon" href="/img/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/style.css">
@@ -49,7 +49,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
     <img src="/img/score-curve.png" loading="lazy" alt="Stacked bar chart of five models by engineering points.">
     <figcaption><span class="pn">Figure 1</span> Points available before any human accuracy judging. Gemma 3 1B banks 47.5 of 50. Qwen2.5 3B banks 32.9, because it is the only candidate that misses the throughput bar outright and its 3.26 GB footprint collapses the memory term.</figcaption>
   </figure>
-  <p>The 3B concedes <strong>14.5 points</strong> before answering a single question, which it would have to win back by being twenty-nine accuracy points better. Gemma 3 1B was chosen over a 0.5B for under one point, and over Llama 3.2 1B at identical file size purely because it holds 0.88 GB in memory instead of 1.26 GB on our own selection harness. The shipped figure elsewhere on this site is 1.01 GB, which is the official profiler's peak RSS for the final model: a different measurement of a different thing, and the one that counts for scoring.</p>
+  <p>The 3B concedes <strong>16.7 points</strong> to Gemma 3 1B before answering a single question, which it would have to win back on accuracy alone. We chose Gemma 3 1B over the 0.5B believing it cost about one point. That was our own misreading of the provisional 15 tok/s reference: throughput is scored relative to the fastest submission, and under the published formula the choice cost <strong>13.77</strong> points, not one. We did not switch, because recovering that would need the 0.5B to lose fewer than 27.5 points of panel accuracy, and fitting agronomy into a 1B was the hard part of this project. The shipped figure elsewhere on this site is 1,039 MB, the official profiler's peak RSS for the final model: a different measurement of a different thing, and the one that counts for scoring.</p>
 
   <h2>03</h2>
   <p class="h2sub">A thermal result that runs backwards</p>
@@ -171,7 +171,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
   <p>Read the scoring function first; it told us to build a 1B when instinct said 3B. Measure on the target profile rather than reasoning about it, because the thermal result ran backwards from intuition. Judge a model by reading its answers, since every failure here had a healthy loss curve. And when style transfers but facts do not, the problem is capacity, not data.</p>
 
   <footer>
-    <p class="sig">AGBE — Nwokolo Victor Oluebubechukwu, Lagos.</p>
+    <p class="sig">AGBE. Nwokolo Victor Oluebubechukwu, Lagos.</p>
     <p><a href="/">Back to AGBE</a> ·
        <a href="https://youtu.be/iQCgCXdy6Ww">Demo video</a> &middot; <a href="https://github.com/nevodesigns/agbe">Source, corpus and model card</a> ·
        <a href="https://huggingface.co/NEVODESIGN/agbe-1b">Weights</a></p>
