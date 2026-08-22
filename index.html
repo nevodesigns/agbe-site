@@ -121,7 +121,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
       <tbody>
         <tr><td>Target machine</td><td>8&nbsp;GB RAM, integrated graphics, no GPU, Ubuntu 22.04</td></tr>
         <tr><td>Must run</td><td>Fully offline, through llama.cpp, from a bare GGUF</td></tr>
-        <tr><td>Judged on</td><td>Four prompts: two we submit, two the organisers keep hidden</td></tr>
+        <tr><td>Judged on</td><td>The two prompts we submit, plus hidden prompts the organisers generate</td></tr>
         <tr><td>Our track</td><td>Agriculture, English, African Use Case claimed</td></tr>
       </tbody>
     </table>
@@ -182,7 +182,7 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
   <figure class="plate chart">
     <img src="/img/score-curve.png" loading="lazy"
          alt="Stacked bar chart comparing five candidate models at selection time, scored under the published formula. Qwen2.5 0.5B banks 48.6 of the 50 engineering points, Gemma 3 1B 34.8, and Qwen2.5 3B only 18.1, losing on throughput and memory at once.">
-    <figcaption><span class="pn">Figure 2</span> Points available before any human accuracy judging. The 3B is the instructive row: it is the only candidate that misses the throughput bar outright, and its 3.26 GB footprint collapses the memory term. It concedes 16.7 points to Gemma 3 1B before answering a single question, losing on both terms at once.</figcaption>
+    <figcaption><span class="pn">Figure 2</span> Points available before any human accuracy judging. The 3B is the instructive row: it has the lowest measured throughput of the candidates and its 3.26 GB footprint collapses the memory term. It concedes 16.7 points to Gemma 3 1B before answering a single question, losing on both terms at once.</figcaption>
   </figure>
 
   <h2>The corpus</h2>

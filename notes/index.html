@@ -40,14 +40,14 @@ S<span class="hi">perf</span> = 100 × (TPS_act ÷ TPS_max)
 S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100
 P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre>
   </div>
-  <p>Two things fall out, and one of them we initially read wrong. Memory is charged linearly, so every gigabyte is paid for. Throughput we first took to be at the time read as capped at 15 tok/s, which would make surplus speed worthless; the official formula is <code>100 &times; (TPS<sub>act</sub> &divide; TPS<sub>max</sub>)</code> with 15.0 published as <em>provisional</em>, so the denominator is the fastest submission and extra speed keeps paying. Memory is charged linearly, so every gigabyte is paid for. The instinct to run the largest model that fits in 8 GB is therefore backwards, and it is what most of a field of roughly 1,700 will do.</p>
+  <p>Two things fall out, and one of them we initially read wrong. Memory is charged linearly, so every gigabyte is paid for. We first misread the provisional 15 tok/s reference as a cap, which would have made surplus speed worthless. The published formula is <code>100 &times; (TPS<sub>act</sub> &divide; TPS<sub>max</sub>)</code>, so the denominator is the fastest submission and extra speed keeps paying. The instinct to run the largest model that fits in 8 GB is therefore backwards, and it is what most of a field of roughly 1,700 will do.</p>
 
   <h2>02</h2>
   <p class="h2sub">Measure five candidates, do not reason about them</p>
   <p>We built a harness that holds the machine to the ADTC Standard Laptop profile: four threads, no GPU offload, memory capped to 7 GB, CPU-only <code>llama.cpp</code>.</p>
   <figure class="plate chart">
     <img src="/img/score-curve.png" loading="lazy" alt="Stacked bar chart of five models by engineering points.">
-    <figcaption><span class="pn">Figure 1</span> Points available before any human accuracy judging. Gemma 3 1B banks 47.5 of 50. Qwen2.5 3B banks 32.9, because it is the only candidate that misses the throughput bar outright and its 3.26 GB footprint collapses the memory term.</figcaption>
+    <figcaption><span class="pn">Figure 1</span> Points available before any human accuracy judging, scored under the published formula. Qwen2.5 0.5B banks 48.6 of 50 and Gemma 3 1B 34.8. Qwen2.5 3B banks 18.1: it has the lowest measured throughput of the candidates and its 3.26 GB footprint collapses the memory term, so it loses on both terms at once.</figcaption>
   </figure>
   <p>The 3B concedes <strong>16.7 points</strong> to Gemma 3 1B before answering a single question, which it would have to win back on accuracy alone. We chose Gemma 3 1B over the 0.5B believing it cost about one point. That was our own misreading of the provisional 15 tok/s reference: throughput is scored relative to the fastest submission, and under the published formula the choice cost <strong>13.77</strong> points, not one. We did not switch, because recovering that would need the 0.5B to lose fewer than 27.5 points of panel accuracy, and fitting agronomy into a 1B was the hard part of this project. The shipped figure elsewhere on this site is 1,039 MB, the official profiler's peak RSS for the final model: a different measurement of a different thing, and the one that counts for scoring.</p>
 
@@ -66,7 +66,7 @@ P<span class="hi">thermal</span> = 10 if the CPU throttles or exceeds 85°C</pre
       <caption>Fewer threads ran hotter. With only two or three cores loaded the CPU boosts toward its single-core turbo ceiling and per-core temperature spikes. At four or more the all-core power limit caps clocks, spreading the same work cooler. More parallelism, less heat, more throughput.</caption>
     </table>
   </div>
-  <p>At the time we read <code>S_perf</code> as at the time read as capped at 15 tok/s, which made surplus
+  <p>At the time we read <code>S_perf</code> as capped at 15 tok/s, which made surplus
   throughput look free to trade for thermal headroom. In our own harness that appeared
   to recover ten points. <strong>The cap was a misreading</strong>: the published formula is
   <code>100 &times; (TPS<sub>act</sub> &divide; TPS<sub>max</sub>)</code>, so throughput is scored against the
