@@ -79,7 +79,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
   <p>The obvious answer is a farming chatbot. That breaks the moment you look at where farmers actually are. Rural coverage is patchy, mobile data is a real cost paid out of a thin margin, and a tool that needs the network is a tool that is absent on the morning the armyworm arrives.</p>
 
   <blockquote class="pull">
-    Offline is not a feature we added. It is the shape of the whole thing: if it cannot answer with the network off, on hardware a farmer or a co-operative already owns, it does not count.
+    Offline is not a feature I added. It is the shape of the whole thing: if it cannot answer with the network off, on hardware a farmer or a co-operative already owns, it does not count.
   </blockquote>
 
   <figure class="plate">
@@ -114,7 +114,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
 
   <h2>The challenge</h2>
   <p class="h2sub">What was actually asked for, and how it is marked.</p>
-  <p>The <strong>Africa Deep Tech Challenge 2026</strong>, run by the Africa Deep Tech Foundation, asks for a small language model that runs <em>offline</em> on a budget laptop and is genuinely useful in one domain. We entered <strong>Agriculture</strong>, one of seven tracks, against a field of about 1,700 participants.</p>
+  <p>The <strong>Africa Deep Tech Challenge 2026</strong>, run by the Africa Deep Tech Foundation, asks for a small language model that runs <em>offline</em> on a budget laptop and is genuinely useful in one domain. I entered <strong>Agriculture</strong>, one of seven tracks, against a field of about 1,700 participants.</p>
 
   <div class="tablewrap">
     <table>
@@ -122,7 +122,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
         <tr><td>Target machine</td><td>8&nbsp;GB RAM, integrated graphics, no GPU, Ubuntu 22.04</td></tr>
         <tr><td>Must run</td><td>Fully offline, through llama.cpp, from a bare GGUF</td></tr>
         <tr><td>Judged on</td><td>Submitted and hidden prompts evaluated by the organisers</td></tr>
-        <tr><td>Our track</td><td>Agriculture, English, African Use Case claimed</td></tr>
+        <tr><td>My track</td><td>Agriculture, English, African Use Case claimed</td></tr>
       </tbody>
     </table>
   </div>
@@ -140,7 +140,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
       </style></defs>
 
       <text class="lbl" x="0" y="14">Where the 100 marks sit</text>
-      <text class="sub" x="0" y="32">Half is a human reading the answer. We could only engineer the other half.</text>
+      <text class="sub" x="0" y="32">Half is a human reading the answer. I could only engineer the other half.</text>
 
       <!-- Numbers and labels sit ABOVE the bars, using the body ink colour, so
            they stay legible in both themes no matter how pale the bar behind
@@ -164,7 +164,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
       <text class="sub" x="112" y="171">Thermal penalty, if the processor throttles or passes 85&#176;C.</text>
       <text class="sub" x="112" y="186">Applied after everything else, so it is the cheapest ten points to lose.</text>
     </svg>
-    <figcaption><span class="pn">Figure 1</span> The two shaded bars are the only parts a developer controls directly, and the second is scored against the fastest submission, not a fixed bar. Reading that before writing any code is what pointed us at a 1B model.</figcaption>
+    <figcaption><span class="pn">Figure 1</span> The two shaded bars are the only parts a developer controls directly, and the second is scored against the fastest submission, not a fixed bar. Reading that before writing any code is what pointed me at a 1B model.</figcaption>
   </figure>
 
   <h2>Why a 1B model, not the biggest that fits</h2>
@@ -177,7 +177,7 @@ S<span class="hi">total</span> = 0.50·S<span class="hi">acc</span> + 0.30·S<sp
 S<span class="hi">perf</span> = 100 × (TPS_act ÷ TPS_max)
 S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre>
   </div>
-  <p>Memory is paid for linearly, so every gigabyte is charged. Throughput is scored <em>relative to the fastest submission</em>, with 15 tok/s published only as a provisional reference, so surplus speed is not wasted the way a fixed cap would make it. So the instinct to pick the largest model that fits inside 8 GB is precisely backwards. We measured five candidates on the target profile rather than guessing.</p>
+  <p>Memory is paid for linearly, so every gigabyte is charged. Throughput is scored <em>relative to the fastest submission</em>, with 15 tok/s published only as a provisional reference, so surplus speed is not wasted the way a fixed cap would make it. So the instinct to pick the largest model that fits inside 8 GB is precisely backwards. I measured five candidates on the target profile rather than guessing.</p>
 
   <figure class="plate chart">
     <img src="/img/score-curve.png" loading="lazy"
@@ -199,21 +199,21 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
   <h2>Honest status</h2>
   <p class="h2sub">Where this actually is, as of today.</p>
   <p>The engineering is measured: 814 MB on disk, 1,039 MB peak memory, 24.29 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
-  <p>Throughput and memory are settled and neither depends on temperature: <strong>24.29 tokens per second</strong> and <strong>1,039&nbsp;MB</strong> of the 7&nbsp;GB budget, which gives 85.5 on S_eff. Against the provisional 15 tok/s reference that is <strong>47.1 of the 50 engineering points</strong>, but S_perf is scored relative to the fastest submission, so our share of it depends on what everyone else ships.</p>
-  <p>One number depends on a rule we do not yet know. The official profiler runs a heavy 512-token prompt-processing pass on top of generation, and on this i7-10850H that reaches 100&deg;C and throttles. We tested whether preparation helps: one run from 88&deg;C and one from a genuinely cold 44&deg;C peaked within a degree of each other and both throttled. If the penalty is taken from our telemetry it is 37.1; if the audit re-measures in its own sandbox, as the profiler's schema implies when it notes that cloud hosts usually report no thermal sensor at all, it is 47.1.</p>
+  <p>Throughput and memory are settled and neither depends on temperature: <strong>24.29 tokens per second</strong> and <strong>1,039&nbsp;MB</strong> of the 7&nbsp;GB budget, which gives 85.5 on S_eff. Against the provisional 15 tok/s reference that is <strong>47.1 of the 50 engineering points</strong>, but S_perf is scored relative to the fastest submission, so my share of it depends on what everyone else ships.</p>
+  <p>One number depends on a rule I do not yet know. The official profiler runs a heavy 512-token prompt-processing pass on top of generation, and on this i7-10850H that reaches 100&deg;C and throttles. I tested whether preparation helps: one run from 88&deg;C and one from a genuinely cold 44&deg;C peaked within a degree of each other and both throttled. If the penalty is taken from my telemetry it is 37.1; if the audit re-measures in its own sandbox, as the profiler's schema implies when it notes that cloud hosts usually report no thermal sensor at all, it is 47.1.</p>
 
   <div class="tablewrap">
     <table>
       <thead><tr><th>If the thermal penalty is judged&hellip;</th><th>S_perf</th><th>S_eff</th><th>P_thermal</th><th>Total</th></tr></thead>
       <tbody>
         <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.1</strong></td></tr>
-        <tr class="pick"><td>from our own telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
+        <tr class="pick"><td>from my own telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
       </tbody>
-      <caption>Both figures are honest. Throughput and memory are identical either way: 24.29 tok/s and 1,039&nbsp;MB of the 7&nbsp;GB budget. Only the penalty differs. We quote 37.1, the figure we can prove on our own hardware.</caption>
+      <caption>Both figures are honest. Throughput and memory are identical either way: 24.29 tok/s and 1,039&nbsp;MB of the 7&nbsp;GB budget. Only the penalty differs. I quote 37.1, the figure I can prove on my own hardware.</caption>
     </table>
   </div>
 
-  <p>The penalty is a property of this laptop rather than the model. An i7-10850H is a 45&nbsp;W part in a thin chassis; under the profiler's 512-token prompt pass it throttles, while the same model in ordinary generation at four threads peaks at 83&deg;C and does not. Pinning to four cores to match the target machine made it worse, not better: throughput fell below the provisional 15 tok/s reference and it throttled anyway. The judging FAQ describes a sandbox &quot;resource-capped to match the Standard Laptop profile&quot;, and a properly cooled datacentre host would not throttle under the same load, so the sandbox figure is likely the higher one. We have asked the organisers which rule applies.</p>
+  <p>The penalty is a property of this laptop rather than the model. An i7-10850H is a 45&nbsp;W part in a thin chassis; under the profiler's 512-token prompt pass it throttles, while the same model in ordinary generation at four threads peaks at 83&deg;C and does not. Pinning to four cores to match the target machine made it worse, not better: throughput fell below the provisional 15 tok/s reference and it throttled anyway. The judging FAQ describes a sandbox &quot;resource-capped to match the Standard Laptop profile&quot;, and a properly cooled datacentre host would not throttle under the same load, so the sandbox figure is likely the higher one. I have asked the organisers which rule applies.</p>
   <p>The final v13 build was evaluated on a 66-prompt behaviour battery and a 92-prompt hostile battery: <strong>49/66</strong> overall, <strong>79/92</strong> hostile, <strong>56/62</strong> attacks withstood, and <strong>zero safety leaks</strong>.</p>
 
   <blockquote class="pull">
@@ -235,13 +235,13 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
     
 
     <details><summary>Why Gemma 3 1B and not something larger?</summary>
-    <p>Because the scoring formula punishes size and we read it before writing code. Memory is charged linearly against a 7&nbsp;GB budget, so every gigabyte is paid for, and a 3B model concedes points before it answers anything. Throughput is scored relative to the fastest submission rather than against a fixed bar, which we initially misread as a cap; the technical notes record what that misreading cost us.</p></details>
+    <p>Because the scoring formula punishes size and I read it before writing code. Memory is charged linearly against a 7&nbsp;GB budget, so every gigabyte is paid for, and a 3B model concedes points before it answers anything. Throughput is scored relative to the fastest submission rather than against a fixed bar, which I initially misread as a cap; the technical notes record what that misreading cost me.</p></details>
 
     <details><summary>Why Q4_K_M quantisation?</summary>
     <p>It gives 814&nbsp;MB on disk and about 1&nbsp;GB in memory, which is the balance point between answer quality and the memory term in the score. It is the quantisation the model-selection curve was measured on, so the comparison between candidates is like for like, and it is what the published weights are.</p></details>
 
     <details><summary>Why not use retrieval instead of fine-tuning?</summary>
-    <p>Retrieval would have been a reasonable design, and on a larger machine it might be the better one. We fine-tuned because the judged artefact is a single GGUF file run through <code>llama.cpp</code>, with no application layer around it, so a retrieval index would not be part of what gets scored. Given that constraint, the knowledge had to live in the weights.</p></details>
+    <p>Retrieval would have been a reasonable design, and on a larger machine it might be the better one. I fine-tuned because the judged artefact is a single GGUF file run through <code>llama.cpp</code>, with no application layer around it, so a retrieval index would not be part of what gets scored. Given that constraint, the knowledge had to live in the weights.</p></details>
 
     <details><summary>Can I reproduce your results?</summary>
     <p>Yes, and that is the intent. The corpus generator, the training script and the Kaggle notebook that runs the whole pipeline end to end on a free T4 are all in the repository. The weights are public. Every number quoted on this site comes from a tool you can run yourself.</p></details>
@@ -249,13 +249,13 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
     <h3 class="faq-cat">Scoring and measurement</h3>
 
     <details><summary>Why do you quote two different scores?</summary>
-    <p>Because one input to the formula depends on a rule we do not yet know. Throughput and memory are settled and identical either way, giving S_perf 100 and S_eff 85.5 at the provisional 15 tok/s reference; the final S_perf depends on the fastest submission. The only variable is whether a ten point thermal penalty attaches to us, which depends on whether the organisers measure temperature from a participant's own telemetry or inside their audit sandbox. We quote 37.1, the figure we can prove on our hardware, and show 47.1 as what the same model earns on a machine that is not thermally constrained.</p></details>
+    <p>Because one input to the formula depends on a rule we do not yet know. Throughput and memory are settled and identical either way, giving S_perf 100 and S_eff 85.5 at the provisional 15 tok/s reference; the final S_perf depends on the fastest submission. The only variable is whether a ten point thermal penalty attaches to me, which depends on whether the organisers measure temperature from a participant's own telemetry or inside their audit sandbox. I quote 37.1, the figure I can prove on my hardware, and show 47.1 as what the same model earns on a machine that is not thermally constrained.</p></details>
 
     <details><summary>Why does your laptop overheat?</summary>
-    <p>It is a 45&nbsp;W processor in a thin chassis. Under the profiler's 512-token prompt-processing pass it reaches 100&deg;C and throttles, and it does so from a cold start with the case elevated and a fan running. In ordinary generation at four threads, which is what a farmer asking questions actually produces, the same model peaks at 83&deg;C and takes no penalty. We also tried pinning to four cores to match the target machine and it made things worse: throughput fell below the provisional 15 tok/s reference and it throttled anyway.</p></details>
+    <p>It is a 45&nbsp;W processor in a thin chassis. Under the profiler's 512-token prompt-processing pass it reaches 100&deg;C and throttles, and it does so from a cold start with the case elevated and a fan running. In ordinary generation at four threads, which is what a farmer asking questions actually produces, the same model peaks at 83&deg;C and takes no penalty. I also tried pinning to four cores to match the target machine and it made things worse: throughput fell below the provisional 15 tok/s reference and it throttled anyway.</p></details>
 
     <details><summary>Are the numbers on this site measured or estimated?</summary>
-    <p>Measured, on the target profile, and the figures come from the official ADTC profiler rather than from our own tooling. Where the two disagreed we published the official one: our harness reported 0.88&nbsp;GB of memory and the profiler reported 1,039&nbsp;MB, so the site quotes the profiler. The raw <code>submission.json</code> is committed to the repository.</p></details>
+    <p>Measured, on the target profile, and the figures come from the official ADTC profiler rather than from my own tooling. Where the two disagreed I published the official one: my harness reported 0.88&nbsp;GB of memory and the profiler reported 1,039&nbsp;MB, so the site quotes the profiler. The raw <code>submission.json</code> is committed to the repository.</p></details>
 
     <h3 class="faq-cat">The wider picture</h3>
 
