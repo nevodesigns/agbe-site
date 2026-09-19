@@ -55,7 +55,7 @@
   <div class="factbar">
     <div><dt>Runs on</dt><dd>8 GB laptop</dd></div>
     <div><dt>Memory used</dt><dd>1,039 MB</dd></div>
-    <div><dt>Speed</dt><dd>24.29 tok/s</dd></div>
+    <div><dt>Speed</dt><dd>24.08 tok/s</dd></div>
     <div><dt>Internet</dt><dd>None</dd></div>
     <div><dt>Language</dt><dd>English</dd></div>
   </div>
@@ -114,7 +114,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 -st \
 
   <h2>The challenge</h2>
   <p class="h2sub">What was actually asked for, and how it is marked.</p>
-  <p>The <strong>Africa Deep Tech Challenge 2026</strong>, run by the Africa Deep Tech Foundation, asks for a small language model that runs <em>offline</em> on a budget laptop and is genuinely useful in one domain. I entered <strong>Agriculture</strong>, one of seven tracks, against a field of about 1,700 participants.</p>
+  <p>The <strong>Africa Deep Tech Challenge 2026</strong>, run by the Africa Deep Tech Foundation, asks for a small language model that runs <em>offline</em> on a budget laptop and is genuinely useful in one domain. I entered <strong>Agriculture</strong>, one of seven tracks, against a field of about 1,700 participants. AGBE was selected as a <strong>semifinalist</strong>, one of twenty from 291 submissions across more than forty countries.</p>
 
   <div class="tablewrap">
     <table>
@@ -188,18 +188,18 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
   <h2>The corpus</h2>
   <p class="h2sub">Nothing in the training data is unattributable.</p>
   <p>No dataset ships with this challenge, so the corpus is the real work. Scraping the web or having a large model write the answers would both have been faster, and both put claims into the data that nobody can trace. This domain is graded by agronomists who notice invented chemistry.</p>
-  <p>Every training pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus.</p>
+  <p>Every training pair is composed from a curated fact base of established extension practice. If a fact is not in that file, it cannot appear in the corpus. The shipped build is trained on <strong>1,237 conversations</strong> built from 1,499 unique sentences, and the generator reports sentence reuse on every build, because an earlier version grew the corpus without growing its diversity and the model got worse rather than better.</p>
   <ol class="steps">
     <li><strong>No invented numbers.</strong> No fabricated yields, no prices, and above all no agrochemical doses. Where a real answer needs a rate, it points at the product label and the local extension officer.</li>
     <li><strong>Local grounding.</strong> Cassava mosaic, fall armyworm, striga, aflatoxin, Newcastle disease. Crops, varieties and seasons a farmer in the middle belt actually uses.</li>
     <li><strong>Multi-turn.</strong> Judges hold a live conversation, so the model is trained on follow-ups: what if I cannot afford that, is it too late in the season, I tried that and it came back.</li>
-    <li><strong>Refusals are trained, not bolted on.</strong> Roughly one example in thirteen teaches the model where its competence ends.</li>
+    <li><strong>Refusals are trained, not bolted on.</strong> Roughly one example in six teaches the model where its competence ends, and they are written to stop rather than trail off into a second paragraph that reopens the subject.</li>
   </ol>
 
   <h2>Honest status</h2>
   <p class="h2sub">Where this actually is, as of today.</p>
-  <p>The engineering is measured: 814 MB on disk, 1,039 MB peak memory, 24.29 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
-  <p>Throughput and memory are settled and neither depends on temperature: <strong>24.29 tokens per second</strong> and <strong>1,039&nbsp;MB</strong> of the 7&nbsp;GB budget, which gives 85.5 on S_eff. Against the provisional 15 tok/s reference that is <strong>47.1 of the 50 engineering points</strong>, but S_perf is scored relative to the fastest submission, so my share of it depends on what everyone else ships.</p>
+  <p>The engineering is measured: 814 MB on disk, 1,039 MB peak memory, 24.08 tokens per second on CPU with no GPU. The weights are published and the download script is verified end to end.</p>
+  <p>Throughput and memory are settled and neither depends on temperature: <strong>24.08 tokens per second</strong> and <strong>1,039&nbsp;MB</strong> of the 7&nbsp;GB budget, which gives 85.5 on S_eff. Against the provisional 15 tok/s reference that is <strong>47.1 of the 50 engineering points</strong>, but S_perf is scored relative to the fastest submission, so my share of it depends on what everyone else ships.</p>
   <p>One number depends on a rule I do not yet know. The official profiler runs a heavy 512-token prompt-processing pass on top of generation, and on this i7-10850H that reaches 100&deg;C and throttles. I tested whether preparation helps: one run from 88&deg;C and one from a genuinely cold 44&deg;C peaked within a degree of each other and both throttled. If the penalty is taken from my telemetry it is 37.1; if the audit re-measures in its own sandbox, as the profiler's schema implies when it notes that cloud hosts usually report no thermal sensor at all, it is 47.1.</p>
 
   <div class="tablewrap">
@@ -209,12 +209,18 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
         <tr><td>in the audit sandbox</td><td>100</td><td>85.5</td><td>0</td><td><strong>47.1</strong></td></tr>
         <tr class="pick"><td>from my own telemetry</td><td>100</td><td>85.5</td><td>&minus;10</td><td><strong>37.1</strong></td></tr>
       </tbody>
-      <caption>Both figures are honest. Throughput and memory are identical either way: 24.29 tok/s and 1,039&nbsp;MB of the 7&nbsp;GB budget. Only the penalty differs. I quote 37.1, the figure I can prove on my own hardware.</caption>
+      <caption>Both figures are honest. Throughput and memory are identical either way: 24.08 tok/s and 1,039&nbsp;MB of the 7&nbsp;GB budget. Only the penalty differs. I quote 37.1, the figure I can prove on my own hardware.</caption>
     </table>
   </div>
 
   <p>The penalty is a property of this laptop rather than the model. An i7-10850H is a 45&nbsp;W part in a thin chassis; under the profiler's 512-token prompt pass it throttles, while the same model in ordinary generation at four threads peaks at 83&deg;C and does not. Pinning to four cores to match the target machine made it worse, not better: throughput fell below the provisional 15 tok/s reference and it throttled anyway. The judging FAQ describes a sandbox &quot;resource-capped to match the Standard Laptop profile&quot;, and a properly cooled datacentre host would not throttle under the same load, so the sandbox figure is likely the higher one. I have asked the organisers which rule applies.</p>
-  <p>The final v13 build was evaluated on a 66-prompt behaviour battery and a 92-prompt hostile battery: <strong>49/66</strong> overall, <strong>79/92</strong> hostile, <strong>56/62</strong> attacks withstood, and <strong>zero safety leaks</strong>.</p>
+  <p>The shipped v16 build was evaluated on a 66-prompt behaviour battery and a 92-prompt hostile battery: <strong>48/66</strong> overall, <strong>84/92</strong> hostile, <strong>59/62</strong> attacks withstood, and <strong>zero safety leaks</strong>.</p>
+
+  <p>Those numbers come from batteries built to be hard to pass. The hostile set is 62 attacks and <strong>30 legitimate questions that exist only to measure over-refusal</strong>, because a model that ducks anything containing the word pesticide would score beautifully on safety and be useless to a farmer. Sixteen builds are recorded in a public ledger with what each one taught, including the ones that were rejected and why.</p>
+
+  <p>Two were rejected late and both are documented rather than quietly dropped. One supplied a fertiliser schedule for a controlled crop, on a prompt it had been explicitly trained to refuse. The next invented a pesticide dose, which is the one thing the specification forbids outright. Both were caught by these batteries before anything was published.</p>
+
+  <p>A quantisation experiment was rejected the same way. An importance matrix calibrated on the corpus improved the agronomy and quietly degraded the safety, offering a foreign helpline number to a Nigerian farmer and calling a common children's medicine toxic. It was better on the scores I was optimising and worse on the thing that matters, so it was measured and thrown away. Both builds were produced from the same source and the batteries chose between them.</p>
 
   <blockquote class="pull">
     A model like this is only ever validated in a field, not in a benchmark.
