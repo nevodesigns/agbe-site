@@ -305,3 +305,71 @@ figure.plate.chart img{filter:none}
   padding-right:2rem;
 }
 .faq details p a{color:var(--green)}
+
+/* ---------- documentation emphasis ----------
+   The build notes answer most of what a reader asks next, so the link to them
+   is a filled button rather than a quiet label, it rings a few times on arrival,
+   and a card offers it once to anyone who has not opened it. */
+.topnav-link{
+  font-size:.74rem; font-weight:700; letter-spacing:.11em;
+  background:var(--ochre); color:var(--paper); border-color:var(--ochre);
+  padding:.6rem .95rem; gap:.45rem; position:relative;
+}
+.topnav-link:hover{ color:var(--paper); background:var(--ink); border-color:var(--ink) }
+.topnav-link .tn-arrow{ transition:transform .25s }
+.topnav-link:hover .tn-arrow{ transform:translateX(3px) }
+.topnav-link::after{
+  content:""; position:absolute; inset:-4px; border:2px solid var(--ochre);
+  opacity:0; pointer-events:none; animation:docring 2.6s ease-out 1.4s 4;
+}
+@keyframes docring{
+  0%{ transform:scale(1); opacity:.6 }
+  70%{ transform:scale(1.3); opacity:0 }
+  100%{ opacity:0 }
+}
+.topnav-link:hover::after, .topnav-link:focus-visible::after, .docseen .topnav-link::after{ animation:none; opacity:0 }
+
+.docnudge{
+  position:fixed; top:4.2rem; right:1rem; z-index:21;
+  width:min(330px, calc(100vw - 2rem));
+  background:var(--paper); border:1px solid var(--ink);
+  padding:.95rem 1.05rem; box-shadow:0 16px 44px rgba(0,0,0,.2);
+  display:grid; gap:.55rem; opacity:0; transform:translateY(-10px);
+  transition:opacity .45s ease, transform .45s cubic-bezier(.2,.9,.3,1);
+  pointer-events:none;
+}
+.docnudge.show{ opacity:1; transform:none; pointer-events:auto }
+.docnudge::before{
+  content:""; position:absolute; top:-7px; right:30px; width:12px; height:12px;
+  background:var(--paper); border-left:1px solid var(--ink); border-top:1px solid var(--ink);
+  transform:rotate(45deg);
+}
+.docnudge b{ font-size:.98rem; line-height:1.35 }
+.docnudge p{ font-family:var(--sans); font-size:.79rem; color:var(--ink-soft); margin:0; line-height:1.55 }
+.docnudge .nudge-row{ display:flex; align-items:center; justify-content:space-between; gap:.8rem }
+.docnudge a{
+  font-family:var(--sans); font-size:.71rem; letter-spacing:.13em; text-transform:uppercase;
+  font-weight:700; color:var(--ochre); text-decoration:none; border-bottom:2px solid var(--ochre); padding-bottom:1px;
+}
+.docnudge a:hover{ color:var(--ink); border-color:var(--ink) }
+.docnudge button{
+  font-family:var(--sans); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:none; border:0; cursor:pointer; padding:.2rem;
+}
+.docnudge button:hover{ color:var(--ink) }
+@media (max-width:520px){
+  .docnudge{ top:auto; bottom:4.4rem; right:1rem }
+  .docnudge::before{ top:auto; bottom:-7px; transform:rotate(225deg) }
+}
+
+.docbanner{ border-width:2px; border-color:var(--ochre); align-items:center }
+.docbanner:hover{ border-color:var(--ink); background:var(--paper) }
+.docbanner .rm-go{ display:inline-flex; align-items:center; gap:.45rem }
+.rm-arrow{ display:inline-block; animation:docnudgearrow 1.9s ease-in-out infinite }
+@keyframes docnudgearrow{ 0%,100%{ transform:translateX(0) } 50%{ transform:translateX(5px) } }
+
+@media (prefers-reduced-motion:reduce){
+  .topnav-link::after{ animation:none; opacity:0 }
+  .rm-arrow{ animation:none }
+  .docnudge{ transition:none }
+}

@@ -76,3 +76,67 @@
     else if (mq.addListener) mq.addListener(onChange);
   }
 })();
+
+/* AGBE — documentation nudge.
+ *
+ * Most readers who bounce off the landing page never find the build notes, which
+ * answer the questions the page raises. So the notes are offered once, quietly,
+ * a few seconds in or as soon as the reader scrolls, and never again on that
+ * browser. Everything here degrades to nothing: with JavaScript off the card
+ * stays hidden and the header button still links to the notes.
+ */
+(function () {
+  "use strict";
+
+  var SEEN = "agbe-doc-nudge";
+  var card = document.getElementById("docnudge");
+  if (!card) return;
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function seen() {
+    try { return localStorage.getItem(SEEN) === "1"; } catch (e) { return false; }
+  }
+  function remember() {
+    try { localStorage.setItem(SEEN, "1"); } catch (e) {}
+  }
+
+  if (seen()) {
+    document.documentElement.classList.add("docseen");
+    return;
+  }
+
+  var hideTimer = null;
+
+  function show() {
+    card.hidden = false;
+    /* one frame, so the transition has a starting state to move from */
+    requestAnimationFrame(function () { card.classList.add("show"); });
+    hideTimer = window.setTimeout(dismiss, 14000);
+  }
+
+  function dismiss() {
+    window.clearTimeout(hideTimer);
+    card.classList.remove("show");
+    document.documentElement.classList.add("docseen");
+    remember();
+    window.setTimeout(function () { card.hidden = true; }, 500);
+  }
+
+  document.getElementById("docnudge-x").addEventListener("click", dismiss);
+  document.getElementById("docnudge-go").addEventListener("click", remember);
+
+  /* whichever comes first: a few seconds of reading, or the first scroll */
+  var armed = true;
+  function trigger() {
+    if (!armed) return;
+    armed = false;
+    window.removeEventListener("scroll", onScroll);
+    show();
+  }
+  function onScroll() {
+    if (window.scrollY > 300) trigger();
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.setTimeout(trigger, reduce ? 1200 : 4200);
+})();

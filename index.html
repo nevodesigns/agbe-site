@@ -14,9 +14,18 @@
 <body>
 
 <nav class="topnav">
-  <a class="topnav-link" href="/notes/">Documentation</a>
+  <a class="topnav-link" href="/notes/">Documentation <span class="tn-arrow" aria-hidden="true">&#8594;</span></a>
   <button class="theme-toggle" type="button" aria-label="Switch theme">Dark</button>
 </nav>
+
+<aside class="docnudge" id="docnudge" hidden>
+  <b>New here? Start with the build notes.</b>
+  <p>How the corpus was composed, what every build measured, and the three builds that were thrown away for being unsafe.</p>
+  <span class="nudge-row">
+    <a href="/notes/" id="docnudge-go">Read the documentation</a>
+    <button type="button" id="docnudge-x">Not now</button>
+  </span>
+</aside>
 
 <section class="hero">
   <img class="bg" src="/img/hero-maize-kaduna.jpg"
@@ -278,6 +287,14 @@ S<span class="hi">eff</span>  = max(0, (7.0 − peak RAM GB) ÷ 7.0) × 100</pre
     <p>The code and corpus are open in the repository. The base model is Gemma 3 1B, used under the <a href="https://ai.google.dev/gemma/terms">Gemma Terms of Use</a>, and inference runs on <code>llama.cpp</code>.</p></details>
 
   </div>
+
+  <a class="readmore docbanner" href="/notes/">
+    <span>
+      <span class="rm-t">Read the build notes</span>
+      <span class="rm-s">Every build measured, the corpus method, the safety batteries, and the three builds that were thrown away. It is the honest version of this page.</span>
+    </span>
+    <span class="rm-go">Documentation <span class="rm-arrow" aria-hidden="true">&#8594;</span></span>
+  </a>
 
   <footer>
     <p class="sig">AGBE. Nwokolo Victor Oluebubechukwu, Lagos.</p>
