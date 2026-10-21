@@ -203,3 +203,9 @@ footer .fine { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--
 .tx[hidden] { display: none; }
 .note code { overflow-wrap: anywhere; }
 body { overflow-x: clip; }
+
+/* top 10 finalist badge */
+.hero-art { position: relative; }
+.seal { position: absolute; top: -34px; right: -10px; width: 132px; height: 132px; z-index: 3; filter: drop-shadow(0 6px 14px rgba(0,0,0,.28)); }
+.seal-sm { width: 84px; height: 84px; margin: 6px 0 12px; }
+@media (max-width: 760px) { .seal { width: 96px; height: 96px; top: -24px; right: 4px; } }

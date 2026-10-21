@@ -31,7 +31,7 @@
       AGBE
     </a>
     <nav aria-label="Sections">
-      <a href="#product">Product</a><a href="#answers">See it answer</a><a href="#proof">Proof</a><a href="#build">The build</a><a href="#verdict">Judges' verdict</a><a href="#roadmap">Roadmap</a><a href="#invest">Invest</a><a href="/notes/">Build notes</a>
+      <a href="#product">Product</a><a href="#answers">See it answer</a><a href="#proof">Proof</a><a href="#build">The build</a><a href="#verdict">Judges' verdict</a><a href="#v2">Version 2</a><a href="#roadmap">Roadmap</a><a href="#invest">Invest</a><a href="/notes/">Build notes</a>
     </nav>
     <a class="btn solid" href="#invest">Get in touch</a>
     <button class="theme" type="button" aria-label="Switch theme">Dark</button>
@@ -43,7 +43,7 @@
 <section class="hero" id="top">
   <div class="wrap hero-in">
     <div>
-      <p class="eyebrow">Africa Deep Tech Challenge 2026 finalist &middot; Agriculture</p>
+      <p class="eyebrow">Top 10 finalist of 291 submissions &middot; Africa Deep Tech Challenge 2026 &middot; Agriculture</p>
       <h1>A farm advisor that works where the network does not.</h1>
       <p class="sub">AGBE is a one-billion-parameter language model tuned on West and Central African agronomy. It runs on an ordinary 8 GB laptop with the internet off, and it is built to refuse when guessing could hurt a farmer.</p>
       <div class="actions"><a class="btn solid" href="#answers">See it answer</a><a class="btn" href="#proof">Read the proof</a><a class="btn" href="#try">Run it yourself</a></div>
@@ -52,6 +52,7 @@
       </ul>
     </div>
     <div class="hero-art">
+      <img class="seal" src="/img/badge-top10.svg" alt="Top 10 finalist badge: Africa Deep Tech Challenge 2026, 10 of 291 submissions" width="132" height="132">
       <figure class="photo"><img src="/img/hero-maize-kaduna.jpg" alt="Maize under cultivation on smallholder plots outside Kaduna, Nigeria" width="1200" height="800"></figure>
       <div class="term" aria-label="A real AGBE answer"><div class="term-bar"><span>AGBE, running offline</span><span>no internet</span></div><div class="term-body"><div class="q">&gt; My child has a fever and is vomiting. What medicine should I give?</div><div class="a ok">I cannot advise that. I am an agricultural advisor and do not prescribe medicine.
 
@@ -145,7 +146,7 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
     <div class="two" style="margin-top:56px">
       <div>
         <h3>The competition scoreboard</h3>
-        <p>The Africa Deep Tech Challenge asks for a small model that runs offline on a budget laptop. AGBE entered the Agriculture track and went from semifinalist (20 of 291 submissions) to the live final (10 finalists).</p>
+        <p>The Africa Deep Tech Challenge asks for a small model that runs offline on a budget laptop. AGBE entered the Agriculture track and went from semifinalist (20 of 291 submissions) to the live final (10 finalists). In the final it did not place in the top three. The result stands as one of the top 10 finalists out of 291 submissions.</p>
         <div class="tw"><table>
           <thead><tr><th>Score</th><th class="n">Round 1</th><th class="n">Semifinal</th></tr></thead>
           <tbody>
@@ -288,6 +289,56 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
   </div>
 </section>
 
+<section class="sec" id="v2">
+  <div class="wrap">
+    <p class="kicker">Version 2, in progress</p>
+    <h2>What has been built since the final, and what broke on the way.</h2>
+    <p class="lede">The judges said the safety was strong and the agronomy was wrong. Version 2 is the answer to that: answers that come from licensed sources, are checked sentence by sentence, and say so when no source covers the question. It is not shipped yet. This section is the honest ledger of where it stands.</p>
+
+    <div class="two" style="margin-top:40px">
+      <div>
+        <h3>Where it stands, with numbers</h3>
+        <div class="tw"><table>
+          <thead><tr><th>Piece</th><th class="n">State</th></tr></thead>
+          <tbody>
+            <tr><td>Open-licence source passages</td><td class="n">8,062 from 279 documents</td></tr>
+            <tr><td>Facts accepted by the verifier</td><td class="n">1,205 of 1,765 proposed</td></tr>
+            <tr><td>Documents the facts come from</td><td class="n">123</td></tr>
+            <tr><td>Training conversations</td><td class="n">1,280 (964 sourced, 118 abstain, 198 refusal)</td></tr>
+            <tr><td>Held-out test cases never trained on</td><td class="n">140</td></tr>
+            <tr><td>Guard, dev attacks stopped</td><td class="n">53 of 62, none of 30 legitimate blocked</td></tr>
+            <tr><td>Guard, attacks written before tuning</td><td class="n">28 of 30, none of 22 legitimate blocked</td></tr>
+            <tr><td>First training run, small test</td><td class="n">loss 2.8 to 0.44, 89% token accuracy</td></tr>
+            <tr class="pick"><td>Scored v2 model</td><td class="n">not yet, so not claimed</td></tr>
+          </tbody>
+          <caption>Facts are kept only if their quote appears word for word in the source passage, they contain no chemical rate, and they describe advice, not a study. Source licences are Creative Commons attribution only for now.</caption>
+        </table></div>
+      </div>
+      <div>
+        <h3>How an answer is built</h3>
+        <ol class="road">
+          <li><div><b>Hard rules first</b><p>Doses, medicine for people, harm, illegal crops and attempts to change the rules get a fixed, short, safe reply. The model never sees them.</p></div></li>
+          <li><div><b>Retrieve, then answer from the sources</b><p>The model is given numbered passages and trained to answer from them and cite them. If nothing relevant is found it says it has no source.</p></div></li>
+          <li><div><b>Check every sentence</b><p>A sentence with no support in the passages is removed, and a chemical rate is removed whatever its support. Answers stop after the verified steps.</p></div></li>
+        </ol>
+      </div>
+    </div>
+
+    <h3 style="margin-top:56px">What broke, and what it taught</h3>
+    <p>Most of the work after the final was finding faults in my own pipeline before they reached a farmer. These are the real ones, in the order they were found.</p>
+    <ol class="road">
+      <li><div><b>The first model ignored its sources</b><p>Version 16 answers from memory and barely reads the passages it is given, so a guard around it abstains on everything. Version 2 therefore has to be trained to answer from sources. A general 3B model worked through the guard, which proved the design.</p></div></li>
+      <li><div><b>A quarter of the training answers did not address the question</b><p>Reading the actual data, not just counting it, showed answers about torches for a question about timing. A relevance rule now drops those, along with survey findings and human-health sentences.</p></div></li>
+      <li><div><b>A save-and-restore script restored stale data</b><p>It uploaded its own scratch folder, nested deeper on every run, and later restored old copies. One test trained on the old, smaller set. It was fixed and checked against the real repository.</p></div></li>
+      <li><div><b>The saved adapter was the wrong object</b><p>Training reported success but wrote the base model, not the small adapter. The merge then found nothing to merge.</p></div></li>
+      <li><div><b>The free GPU needed special handling</b><p>It has no native bfloat16, so training crashed on its first step until the model was loaded in 16-bit float with the adapter weights kept in 32-bit float. Fixed once, then checked on every later run.</p></div></li>
+      <li><div><b>The merge overwrote the trained weights</b><p>After merging, a copy step also copied the untrained base weights over the result. Every test of the tuned model then matched the base exactly, which is what exposed it. Probing real held-out prompts showed the trained model does answer in short, cited sentences. The fix copies only tokenizer files and re-checks the finished folder.</p></div></li>
+    </ol>
+    <p class="lede" style="margin-top:28px">Each of these was caught by a test that could fail, which is the reason to build the tests first. The numbers above will be replaced with measured results as soon as the next training run scores.</p>
+    <p><a href="https://github.com/nevodesigns/agbe/blob/agbe2/docs/V2_ENGINEERING_LOG.md" rel="noopener">Read the full engineering log</a> &middot; <a href="https://github.com/nevodesigns/agbe/tree/agbe2" rel="noopener">The agbe2 branch</a></p>
+  </div>
+</section>
+
 <section class="sec alt" id="roadmap">
   <div class="wrap two">
     <div>
@@ -296,7 +347,7 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
       <p>The first two are changes to my data and tests, not to the architecture, so they need effort, not capital. The rest need people and partners.</p>
     </div>
     <ol class="road">
-      <li><div><b>Claim-level checking, and answers that stop</b><p>Every sentence must trace to a fact or fail. Answers end after the verified steps, so a correct refusal is not followed by invention.</p></div></li>
+      <li><div><b>Claim-level checking, and answers that stop</b><p>Built and tested as part of version 2: every sentence must trace to a source or be removed, and answers end after the verified steps. Training the model to answer from its sources is under way.</p></div></li>
       <li><div><b>Close the livestock and diagnosis gaps</b><p>Missing control actions added, a confirm-with-a-vet rule on every treatment step, and differential pairs for the look-alikes the judges found.</p></div></li>
       <li><div><b>An agronomist reviews the fact base</b><p>The first hire. Today it is curated from established extension guidance by one person, and the fastest improvement is a domain expert.</p></div></li>
       <li><div><b>Nigerian Pidgin, rebuilt properly</b><p>From the same fact base as the English, with Masakhane data as the starting point, and measured before it is claimed.</p></div></li>
@@ -376,7 +427,7 @@ llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 --temp 0 --seed 1 -st \
 <footer>
   <div class="wrap">
     <div class="cols">
-      <div><h4>AGBE</h4><p>Àgbẹ̀ means farmer. AGBE is an offline farm advisor for African smallholders, built by Nwokolo Victor Oluebubechukwu, Lagos, for the Africa Deep Tech Challenge 2026.</p></div>
+      <div><h4>AGBE</h4><img class="seal-sm" src="/img/badge-top10.svg" alt="Top 10 finalist, Africa Deep Tech Challenge 2026" width="84" height="84"><p>Àgbẹ̀ means farmer. AGBE is an offline farm advisor for African smallholders, built by Nwokolo Victor Oluebubechukwu, Lagos, for the Africa Deep Tech Challenge 2026.</p></div>
       <div><h4>The work</h4><p><a href="https://github.com/nevodesigns/agbe" rel="noopener">Source and ledger</a><br><a href="https://huggingface.co/NEVODESIGN/agbe-1b" rel="noopener">Model weights</a><br><a href="/notes/">Build notes</a><br><a href="https://youtu.be/sevKpLqCt-E" rel="noopener">Demo video</a></p></div>
       <div><h4>Contact</h4><p><a href="mailto:nwokoloebube21@gmail.com?subject=AGBE">nwokoloebube21@gmail.com</a></p></div>
     </div>
