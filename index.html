@@ -64,7 +64,7 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
   <div class="wrap">
     <p class="kicker">The current AGBE: version 2, in progress</p>
     <h2>What has been built since the final, and what broke on the way.</h2>
-    <p class="lede">The judges said the safety was strong and the agronomy was wrong. Version 2 is the answer to that: answers that come from licensed sources, are checked sentence by sentence, and say so when no source covers the question. It is not shipped yet. This section is the honest ledger of where it stands.</p>
+    <p class="lede">The judges said the safety was strong and the agronomy was wrong. Version 2 is the answer to that: answers that come from licensed sources, are checked sentence by sentence, and say so when no source covers the question. It is not shipped yet. This section is the honest ledger of where it stands, including the first scored result.</p>
 
     <div class="two" style="margin-top:40px">
       <div>
@@ -80,9 +80,13 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
             <tr><td>Guard, dev attacks stopped</td><td class="n">53 of 62, none of 30 legitimate blocked</td></tr>
             <tr><td>Guard, attacks written before tuning</td><td class="n">28 of 30, none of 22 legitimate blocked</td></tr>
             <tr><td>First training run, small test</td><td class="n">loss 2.8 to 0.44, 89% token accuracy</td></tr>
-            <tr class="pick"><td>Scored v2 model</td><td class="n">not yet, so not claimed</td></tr>
+            <tr><td>Grounded pass, held-out, untrained to first tuned</td><td class="n">7.1% to 64.3%</td></tr>
+            <tr><td>Valid citation</td><td class="n">17.1% to 71.4%</td></tr>
+            <tr><td>Cites the right source</td><td class="n">11.4% to 47.1%</td></tr>
+            <tr><td>Abstains when no source covers it</td><td class="n">0% to 35.7%</td></tr>
+            <tr class="pick"><td>Wrongly abstains on answerable cases</td><td class="n">2.9% to 28.6% (the cost)</td></tr>
           </tbody>
-          <caption>Facts are kept only if their quote appears word for word in the source passage, they contain no chemical rate, and they describe advice, not a study. Source licences are Creative Commons attribution only for now.</caption>
+          <caption>Facts are kept only if their quote appears word for word in the source passage, they contain no chemical rate, and they describe advice, not a study. Source licences are Creative Commons attribution only for now. Tuned scores are from a first smoke test: Gemma 3 1B, one epoch, 140 cases held out by passage (not by document), measured before quantisation. They are not final.</caption>
         </table></div>
       </div>
       <div>
@@ -105,7 +109,7 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
       <li><div><b>The free GPU needed special handling</b><p>It has no native bfloat16, so training crashed on its first step until the model was loaded in 16-bit float with the adapter weights kept in 32-bit float. Fixed once, then checked on every later run.</p></div></li>
       <li><div><b>The merge overwrote the trained weights</b><p>After merging, a copy step also copied the untrained base weights over the result. Every test of the tuned model then matched the base exactly, which is what exposed it. Probing real held-out prompts showed the trained model does answer in short, cited sentences. The fix copies only tokenizer files and re-checks the finished folder.</p></div></li>
     </ol>
-    <p class="lede" style="margin-top:28px">Each of these was caught by a test that could fail, which is the reason to build the tests first. The numbers above will be replaced with measured results as soon as the next training run scores.</p>
+    <p class="lede" style="margin-top:28px">Each of these was caught by a test that could fail, which is the reason to build the tests first. The first scored model is a smoke test, not the final one. The full run trains three base models for two epochs and will replace these numbers.</p>
     <p><a href="https://github.com/nevodesigns/agbe/blob/agbe2/docs/V2_ENGINEERING_LOG.md" rel="noopener">Read the full engineering log</a> &middot; <a href="https://github.com/nevodesigns/agbe/tree/agbe2" rel="noopener">The agbe2 branch</a></p>
   </div>
 </section>
