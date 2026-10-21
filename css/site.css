@@ -209,3 +209,9 @@ body { overflow-x: clip; }
 .seal { position: absolute; top: -34px; right: -10px; width: 132px; height: 132px; z-index: 3; filter: drop-shadow(0 6px 14px rgba(0,0,0,.28)); }
 .seal-sm { width: 84px; height: 84px; margin: 6px 0 12px; }
 @media (max-width: 760px) { .seal { width: 96px; height: 96px; top: -24px; right: 4px; } }
+
+.archive-note { background: var(--ochre-soft); border-block: 1px solid var(--rule); }
+.archive-note p { margin: 0; padding: 12px 0; font: 500 15px/1.5 var(--sans); color: var(--ink); }
+.seal-card { width: 150px; height: 150px; margin: 0 0 18px; }
+
+header .btn { white-space: nowrap; }

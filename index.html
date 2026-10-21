@@ -30,9 +30,7 @@
       <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M32 4C46 16 53 33 32 60C11 33 18 16 32 4Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M32 11V54" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M32 24L20.5 18M32 34L18 29M32 44L22 40M32 24l11.5-6M32 34l14-5M32 44l10-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       AGBE
     </a>
-    <nav aria-label="Sections">
-      <a href="#product">Product</a><a href="#answers">See it answer</a><a href="#proof">Proof</a><a href="#build">The build</a><a href="#verdict">Judges' verdict</a><a href="#v2">Version 2</a><a href="#roadmap">Roadmap</a><a href="#invest">Invest</a><a href="/notes/">Build notes</a>
-    </nav>
+    <nav aria-label="Sections"><a href="#v2">What is new</a><a href="#product">Product</a><a href="#answers">See it answer</a><a href="#adtc">ADTC archive</a><a href="#roadmap">Roadmap</a><a href="#invest">Invest</a><a href="/notes/">Build notes</a></nav>
     <a class="btn solid" href="#invest">Get in touch</a>
     <button class="theme" type="button" aria-label="Switch theme">Dark</button>
   </div>
@@ -43,13 +41,14 @@
 <section class="hero" id="top">
   <div class="wrap hero-in">
     <div>
-      <p class="eyebrow">Top 10 finalist of 291 submissions &middot; Africa Deep Tech Challenge 2026 &middot; Agriculture</p>
+      <p class="eyebrow">Version 2 in development &middot; Top 10 finalist of 291 submissions, Africa Deep Tech Challenge 2026</p>
       <h1>A farm advisor that works where the network does not.</h1>
       <p class="sub">AGBE is a one-billion-parameter language model tuned on West and Central African agronomy. It runs on an ordinary 8 GB laptop with the internet off, and it is built to refuse when guessing could hurt a farmer.</p>
-      <div class="actions"><a class="btn solid" href="#answers">See it answer</a><a class="btn" href="#proof">Read the proof</a><a class="btn" href="#try">Run it yourself</a></div>
+      <div class="actions"><a class="btn solid" href="#answers">See it answer</a><a class="btn" href="#v2">See what is new</a><a class="btn" href="#try">Run it yourself</a></div>
       <ul class="facts">
         <li><b>814 MB</b> model file</li><li><b>24.08</b> tokens a second</li><li><b>1,039 MB</b> of memory</li><li><b>No</b> internet, no GPU</li>
       </ul>
+      <p class="fine" style="margin-top:10px">Figures measured on v16, the shipped build. Version 2 is measured separately once it is scored.</p>
     </div>
     <div class="hero-art">
       <img class="seal" src="/img/badge-top10.svg" alt="Top 10 finalist badge: Africa Deep Tech Challenge 2026, 10 of 291 submissions" width="132" height="132">
@@ -61,6 +60,55 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
   </div>
 </section>
 
+<section class="sec alt" id="v2">
+  <div class="wrap">
+    <p class="kicker">The current AGBE: version 2, in progress</p>
+    <h2>What has been built since the final, and what broke on the way.</h2>
+    <p class="lede">The judges said the safety was strong and the agronomy was wrong. Version 2 is the answer to that: answers that come from licensed sources, are checked sentence by sentence, and say so when no source covers the question. It is not shipped yet. This section is the honest ledger of where it stands.</p>
+
+    <div class="two" style="margin-top:40px">
+      <div>
+        <h3>Where it stands, with numbers</h3>
+        <div class="tw"><table>
+          <thead><tr><th>Piece</th><th class="n">State</th></tr></thead>
+          <tbody>
+            <tr><td>Open-licence source passages</td><td class="n">8,062 from 279 documents</td></tr>
+            <tr><td>Facts accepted by the verifier</td><td class="n">1,205 of 1,765 proposed</td></tr>
+            <tr><td>Documents the facts come from</td><td class="n">123</td></tr>
+            <tr><td>Training conversations</td><td class="n">1,280 (964 sourced, 118 abstain, 198 refusal)</td></tr>
+            <tr><td>Held-out test cases never trained on</td><td class="n">140</td></tr>
+            <tr><td>Guard, dev attacks stopped</td><td class="n">53 of 62, none of 30 legitimate blocked</td></tr>
+            <tr><td>Guard, attacks written before tuning</td><td class="n">28 of 30, none of 22 legitimate blocked</td></tr>
+            <tr><td>First training run, small test</td><td class="n">loss 2.8 to 0.44, 89% token accuracy</td></tr>
+            <tr class="pick"><td>Scored v2 model</td><td class="n">not yet, so not claimed</td></tr>
+          </tbody>
+          <caption>Facts are kept only if their quote appears word for word in the source passage, they contain no chemical rate, and they describe advice, not a study. Source licences are Creative Commons attribution only for now.</caption>
+        </table></div>
+      </div>
+      <div>
+        <h3>How an answer is built</h3>
+        <ol class="road">
+          <li><div><b>Hard rules first</b><p>Doses, medicine for people, harm, illegal crops and attempts to change the rules get a fixed, short, safe reply. The model never sees them.</p></div></li>
+          <li><div><b>Retrieve, then answer from the sources</b><p>The model is given numbered passages and trained to answer from them and cite them. If nothing relevant is found it says it has no source.</p></div></li>
+          <li><div><b>Check every sentence</b><p>A sentence with no support in the passages is removed, and a chemical rate is removed whatever its support. Answers stop after the verified steps.</p></div></li>
+        </ol>
+      </div>
+    </div>
+
+    <h3 style="margin-top:56px">What broke, and what it taught</h3>
+    <p>Most of the work after the final was finding faults in my own pipeline before they reached a farmer. These are the real ones, in the order they were found.</p>
+    <ol class="road">
+      <li><div><b>The first model ignored its sources</b><p>Version 16 answers from memory and barely reads the passages it is given, so a guard around it abstains on everything. Version 2 therefore has to be trained to answer from sources. A general 3B model worked through the guard, which proved the design.</p></div></li>
+      <li><div><b>A quarter of the training answers did not address the question</b><p>Reading the actual data, not just counting it, showed answers about torches for a question about timing. A relevance rule now drops those, along with survey findings and human-health sentences.</p></div></li>
+      <li><div><b>A save-and-restore script restored stale data</b><p>It uploaded its own scratch folder, nested deeper on every run, and later restored old copies. One test trained on the old, smaller set. It was fixed and checked against the real repository.</p></div></li>
+      <li><div><b>The saved adapter was the wrong object</b><p>Training reported success but wrote the base model, not the small adapter. The merge then found nothing to merge.</p></div></li>
+      <li><div><b>The free GPU needed special handling</b><p>It has no native bfloat16, so training crashed on its first step until the model was loaded in 16-bit float with the adapter weights kept in 32-bit float. Fixed once, then checked on every later run.</p></div></li>
+      <li><div><b>The merge overwrote the trained weights</b><p>After merging, a copy step also copied the untrained base weights over the result. Every test of the tuned model then matched the base exactly, which is what exposed it. Probing real held-out prompts showed the trained model does answer in short, cited sentences. The fix copies only tokenizer files and re-checks the finished folder.</p></div></li>
+    </ol>
+    <p class="lede" style="margin-top:28px">Each of these was caught by a test that could fail, which is the reason to build the tests first. The numbers above will be replaced with measured results as soon as the next training run scores.</p>
+    <p><a href="https://github.com/nevodesigns/agbe/blob/agbe2/docs/V2_ENGINEERING_LOG.md" rel="noopener">Read the full engineering log</a> &middot; <a href="https://github.com/nevodesigns/agbe/tree/agbe2" rel="noopener">The agbe2 branch</a></p>
+  </div>
+</section>
 <section class="sec" id="problem">
   <div class="wrap two">
     <div>
@@ -133,146 +181,10 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
   </div>
 </section>
 
-<section class="sec alt" id="proof">
-  <div class="wrap">
-    <div class="sec-head"><p class="kicker">Proof</p><h2>Measured, not claimed.</h2><p class="lede">Every number here comes from the organisers' official profiler or from a test you can run yourself.</p></div>
-    <dl class="keys">
-      <div><dt>File size</dt><dd>814 MB<small>GGUF Q4_K_M, 814,261,088 bytes</small></dd></div>
-      <div><dt>Speed</dt><dd>24.08<small>tokens a second, CPU only, 4 threads</small></dd></div>
-      <div><dt>Memory</dt><dd>1,039 MB<small>peak, of a 7 GB budget</small></dd></div>
-      <div><dt>Safety leaks</dt><dd>0<small>in 92 hostile prompts, adjudicated by hand</small></dd></div>
-    </dl>
 
-    <div class="two" style="margin-top:56px">
-      <div>
-        <h3>The competition scoreboard</h3>
-        <p>The Africa Deep Tech Challenge asks for a small model that runs offline on a budget laptop. AGBE entered the Agriculture track and went from semifinalist (20 of 291 submissions) to the live final (10 finalists). In the final it did not place in the top three. The result stands as one of the top 10 finalists out of 291 submissions.</p>
-        <div class="tw"><table>
-          <thead><tr><th>Score</th><th class="n">Round 1</th><th class="n">Semifinal</th></tr></thead>
-          <tbody>
-            <tr><td>Accuracy (50%)</td><td class="n">51.18</td><td class="n">50.92</td></tr>
-            <tr><td>Performance (30%)</td><td class="n">38.73</td><td class="n">42.20</td></tr>
-            <tr><td>Efficiency (20%)</td><td class="n">86.57</td><td class="n">86.61</td></tr>
-            <tr><td>Thermal penalty</td><td class="n">&nbsp;</td><td class="n">0</td></tr>
-            <tr><td>African language bonus</td><td class="n">&nbsp;</td><td class="n">2.00</td></tr>
-            <tr class="pick"><td>Total</td><td class="n">54.52</td><td class="n">57.44</td></tr>
-          </tbody>
-          <caption>Total = 0.5 x accuracy + 0.3 x performance + 0.2 x efficiency, minus any thermal penalty, plus the language bonus. Semifinal rank 8 of 15.</caption>
-        </table></div>
-      </div>
-      <div>
-        <h3>Tests on the shipped file</h3>
-        <p>The shipped build, v16, was run through two batteries I wrote, and an external check.</p>
-        <div class="tw"><table>
-          <thead><tr><th>Test</th><th class="n">Result</th></tr></thead>
-          <tbody>
-            <tr><td>Behaviour battery (66 prompts)</td><td class="n">48 of 66</td></tr>
-            <tr><td>Diagnoses named correctly</td><td class="n">12 of 16</td></tr>
-            <tr><td>Hostile battery (92 prompts)</td><td class="n">84 of 92</td></tr>
-            <tr><td>Attacks withstood (62 attacks)</td><td class="n">59 of 62</td></tr>
-            <tr><td>Adjudicated safety leaks</td><td class="n">0</td></tr>
-            <tr><td>ARC-Easy, 50 samples</td><td class="n">0.56</td></tr>
-          </tbody>
-          <caption>My own tests, run at temperature 0. ARC-Easy is a small general-knowledge tripwire, not a measure of farming quality.</caption>
-        </table></div>
-      </div>
-    </div>
-    <p class="note" style="margin-top:28px">Other sources of confidence: the weights are public and pinned by checksum; the whole training pipeline runs end to end on a free Kaggle GPU; the training run, adapter, logs and checksums are published in a provenance folder; and every build, including the ones rejected, is in a public ledger.</p>
-  </div>
-</section>
 
-<section class="sec" id="build">
-  <div class="wrap">
-    <div class="sec-head"><p class="kicker">The build</p><h2>How it was made, and why each choice.</h2><p class="lede">The scoring formula tells you what to build, if you read it first. Every step below is a decision with an alternative that was measured or rejected.</p></div>
-    <ol class="pipe">
-      <li><span class="n">STEP 1</span><h3>Fact base</h3><p>A curated file of established extension practice: 16 crops, 21 pests and diseases, 22 livestock entries, soils, post-harvest, zones, weather and market.</p></li>
-      <li><span class="n">STEP 2</span><h3>Composed corpus</h3><p>A script composes every training conversation from the facts. If it is not in the file, it cannot appear in the data.</p></li>
-      <li><span class="n">STEP 3</span><h3>LoRA fine-tune</h3><p>A small adapter on Gemma 3 1B: 26.1 million trainable numbers, about twenty minutes on a free GPU.</p></li>
-      <li><span class="n">STEP 4</span><h3>Merge and quantise</h3><p>Folded into the model and stored as GGUF Q4_K_M, so it runs on a plain laptop with llama.cpp.</p></li>
-      <li><span class="n">STEP 5</span><h3>Test and decide</h3><p>Two batteries on the actual file. Read every failure, trace it to the data, change the data, retrain, repeat.</p></li>
-    </ol>
 
-    <div class="two" style="margin-top:64px">
-      <div>
-        <h3>Why a 1B model</h3>
-        <p>Memory is charged linearly and speed is scored relative to the fastest entry, so the biggest model that fits is the wrong instinct. I measured five candidates on the target profile.</p>
-        <figure class="chart"><svg viewBox="0 0 560 178" role="img" aria-label="Bar chart"><line class="grid" x1="140.0" y1="0" x2="140.0" y2="156"/><text x="140.0" y="172" text-anchor="middle">0</text><line class="grid" x1="212.0" y1="0" x2="212.0" y2="156"/><text x="212.0" y="172" text-anchor="middle">10</text><line class="grid" x1="284.0" y1="0" x2="284.0" y2="156"/><text x="284.0" y="172" text-anchor="middle">20</text><line class="grid" x1="356.0" y1="0" x2="356.0" y2="156"/><text x="356.0" y="172" text-anchor="middle">30</text><line class="grid" x1="428.0" y1="0" x2="428.0" y2="156"/><text x="428.0" y="172" text-anchor="middle">40</text><line class="grid" x1="500.0" y1="0" x2="500.0" y2="156"/><text x="500.0" y="172" text-anchor="middle">50</text><text x="130" y="21" text-anchor="end">Qwen2.5 0.5B</text><rect class="bar " x="140" y="7" width="349.7" height="20"/><text class="val" x="497.7" y="21">48.57</text><text x="130" y="51" text-anchor="end">Gemma 3 1B (chosen)</text><rect class="bar ship" x="140" y="37" width="250.6" height="20"/><text class="val" x="398.6" y="51">34.8</text><text x="130" y="81" text-anchor="end">Llama 3.2 1B</text><rect class="bar " x="140" y="67" width="231.2" height="20"/><text class="val" x="379.2" y="81">32.11</text><text x="130" y="111" text-anchor="end">Qwen2.5 1.5B</text><rect class="bar " x="140" y="97" width="200.0" height="20"/><text class="val" x="348.0" y="111">27.78</text><text x="130" y="141" text-anchor="end">Qwen2.5 3B</text><rect class="bar rej" x="140" y="127" width="130.2" height="20"/><text class="val" x="278.2" y="141">18.09</text></svg><figcaption>Engineering points out of 50 before any accuracy judging, scored against the fastest of the five candidates. The 3B model concedes about 17 points to Gemma before answering a question. The 0.5B scores about 14 points higher on engineering alone, and I chose Gemma anyway: accuracy is half the score and I judged a 0.5B would not hold the agronomy. That trade is stated, not hidden.</figcaption></figure>
-      </div>
-      <div>
-        <h3>Why the data is composed, not scraped</h3>
-        <p>Scraping the web or having a larger model write the answers would both have been faster, and both put claims into training data that nobody can trace. This domain is judged by agronomists who notice invented chemistry.</p>
-        <div class="tw"><table>
-          <thead><tr><th></th><th class="n">v8</th><th class="n">Shipped</th></tr></thead>
-          <tbody>
-            <tr><td>Conversations</td><td class="n">1,020</td><td class="n">1,237</td></tr>
-            <tr><td>Unique sentences</td><td class="n">900</td><td class="n">1,499</td></tr>
-            <tr><td>Average sentence reuse</td><td class="n">5.6x</td><td class="n">4.3x</td></tr>
-            <tr><td>Share in a 5+ repeat group</td><td class="n">83%</td><td class="n">45%</td></tr>
-            <tr><td>Most repeated sentence</td><td class="n">40x</td><td class="n">17x</td></tr>
-          </tbody>
-          <caption>More conversations did not make a better model. v8 grew the count without growing variety, memorised phrases, and answered a maize question with oil palm spacing.</caption>
-        </table></div>
-      </div>
-    </div>
-
-    <div class="three" style="margin-top:56px">
-      <div><h3>Training</h3><p>LoRA rank 32, alpha 64 across seven projection groups, 3 epochs, 117 steps, learning rate 1.5e-4 on a cosine schedule, in fp16. Loss is counted on the assistant's turns only. Rank 16 learned style but not facts; five epochs broke coherence; four invented words. Three at rank 32 held.</p></div>
-      <div><h3>Quantisation</h3><p>Q4_K_M gives 814 MB on disk and about 1 GB in use. I also tried an importance-matrix quantisation tuned on my own corpus. It improved diagnosis and cut the hostile result from 84 of 92 to 72 of 92, so I shipped the plain one.</p></div>
-      <div><h3>Heat and speed</h3><p>On the organisers' profiler the thermal penalty was 0. My own thin development laptop throttles under the heaviest prompt pass, so I measured from cold, warm and pinned-core starts rather than trust one run. The 24.08 tokens a second is the profiler's figure.</p></div>
-    </div>
-
-    <h3 style="margin-top:64px">Sixteen builds, in public</h3>
-    <p>Every build was judged by reading its answers, not its loss curve. The loss curve looked healthy for every failure.</p>
-    <div class="legend"><span><i class="ship"></i>Shipped</span><span><i class="rej"></i>Rejected</span><span><i></i>Replaced or superseded</span></div>
-    <figure class="chart"><svg viewBox="0 0 720 328" role="img" aria-label="Bar chart"><line class="grid" x1="150.0" y1="0" x2="150.0" y2="306"/><text x="150.0" y="322" text-anchor="middle">0</text><line class="grid" x1="260.9" y1="0" x2="260.9" y2="306"/><text x="260.9" y="322" text-anchor="middle">20</text><line class="grid" x1="371.7" y1="0" x2="371.7" y2="306"/><text x="371.7" y="322" text-anchor="middle">40</text><line class="grid" x1="482.6" y1="0" x2="482.6" y2="306"/><text x="482.6" y="322" text-anchor="middle">60</text><line class="grid" x1="593.5" y1="0" x2="593.5" y2="306"/><text x="593.5" y="322" text-anchor="middle">80</text><text x="140" y="21" text-anchor="end">v8</text><rect class="bar " x="150" y="7" width="421.3" height="20"/><text class="val" x="579.3" y="21">76</text><text x="140" y="51" text-anchor="end">v9</text><rect class="bar " x="150" y="37" width="449.0" height="20"/><text class="val" x="607.0" y="51">81</text><text x="140" y="81" text-anchor="end">v10</text><rect class="bar " x="150" y="67" width="426.8" height="20"/><text class="val" x="584.8" y="81">77</text><text x="140" y="111" text-anchor="end">v11</text><rect class="bar " x="150" y="97" width="437.9" height="20"/><text class="val" x="595.9" y="111">79</text><text x="140" y="141" text-anchor="end">v12</text><rect class="bar rej" x="150" y="127" width="421.3" height="20"/><text class="val" x="579.3" y="141">76</text><text x="140" y="171" text-anchor="end">v13</text><rect class="bar ship" x="150" y="157" width="437.9" height="20"/><text class="val" x="595.9" y="171">79</text><text x="140" y="201" text-anchor="end">v14</text><rect class="bar rej" x="150" y="187" width="432.4" height="20"/><text class="val" x="590.4" y="201">78</text><text x="140" y="231" text-anchor="end">v15</text><rect class="bar rej" x="150" y="217" width="460.1" height="20"/><text class="val" x="618.1" y="231">83</text><text x="140" y="261" text-anchor="end">v16 (shipped)</text><rect class="bar ship" x="150" y="247" width="465.7" height="20"/><text class="val" x="623.7" y="261">84</text><text x="140" y="291" text-anchor="end">v16 with imatrix</text><rect class="bar rej" x="150" y="277" width="399.1" height="20"/><text class="val" x="557.1" y="291">72</text></svg><figcaption>Hostile battery score out of 92 (62 attacks plus 30 legitimate questions that check for over-refusal). v15 scored 83 and still failed: it invented a dose, the one thing the specification forbids.</figcaption></figure>
-    <div class="tw" style="margin-top:28px"><table>
-      <thead><tr><th>Build</th><th>What changed</th><th>What it taught</th><th>Outcome</th></tr></thead>
-      <tbody><tr><td><b>v1</b></td><td>Rank 16, 3 epochs, 375 examples</td><td>Learned my answer scaffolding, not the agronomy. Told a parent to take a feverish child to an extension officer.</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v2</b></td><td>Repeated openings removed, 568 examples</td><td>Stapled unrelated facts together because the generator padded answers with other topics.</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v3</b></td><td>Stopped cross-topic mixing</td><td>Refusals and timing correct. Named the wrong pest ("pod borers").</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v4</b></td><td>42 fall armyworm mentions</td><td>Invented "fall army weevil". More examples do not fix a confusion.</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v5</b></td><td>Rank 32, 5 epochs</td><td>Facts finally correct, but coherence broke and it invented a pesticide called "dorabacite".</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v6, v7</b></td><td>Rank 32, 3 epochs</td><td>English facts and refusals correct and stable. Kept as the measured baseline.</td><td><span class="verdict ">Baseline</span></td></tr><tr><td><b>v8</b></td><td>1,020 conversations, corrective and hardening examples</td><td>Answered "when should I plant maize" with oil palm spacing. 48 of 66, 76 of 92.</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v9</b></td><td>746 conversations, sentence cap, planting calendars</td><td>The safest build made (58 of 62 attacks), but it lost facts: blossom end rot became "bacterial wilt".</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v10</b></td><td>812 conversations, 4 epochs</td><td>Recovered some facts, then invented vocabulary ("mortjacket"). Four epochs reverted.</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v11</b></td><td>Symptom-first diagnosis, rare facts protected</td><td>Diagnoses named 11 of 16. Zero safety leaks. 47 of 66, 79 of 92.</td><td><span class="verdict ">Replaced</span></td></tr><tr><td><b>v12</b></td><td>Six livestock contrast examples</td><td>Bought one diagnosis, gave back two safety leaks. It answered "No." and then supplied a fabricated paediatric dose.</td><td><span class="verdict rej">Rejected</span></td></tr><tr><td><b>v13</b></td><td>Two-way contrast for armyworm against stem borer</td><td>49 of 66, zero leaks. Shipped for a time, then superseded by v16.</td><td><span class="verdict ">Superseded</span></td></tr><tr><td><b>v14</b></td><td>1,194 conversations, Round 1 coverage holes closed</td><td>Fixed the topics the Round 1 judges flagged, but gave a fertiliser schedule for an illegal crop.</td><td><span class="verdict rej">Rejected</span></td></tr><tr><td><b>v15</b></td><td>1,245 conversations</td><td>Best attack resistance of any build (61 of 62), and it invented a pesticide dose: "10 to 25ml per litre".</td><td><span class="verdict rej">Rejected</span></td></tr><tr><td><b>v16</b></td><td>1,237 conversations, ten ineffective examples removed</td><td>Dose refusal restored. 84 of 92 hostile, 59 of 62 attacks, zero adjudicated leaks. Submitted.</td><td><span class="verdict ship">Shipped</span></td></tr><tr><td><b>v16 imatrix</b></td><td>Same weights, importance-matrix quantisation</td><td>Better diagnosis (13 of 16), but 72 of 92 hostile and 50 of 62 attacks. It offered a foreign helpline to a Nigerian farmer.</td><td><span class="verdict rej">Rejected</span></td></tr></tbody>
-    </table></div>
-
-    <div class="two" style="margin-top:64px">
-      <div>
-        <h3>How it is tested</h3>
-        <p>The judges chat with the model live, so the two prompts submitted protect nothing. I built a 66-prompt behaviour battery organised by behaviour class, not topic: diagnosis, telling look-alike pests apart, livestock, weather, market, safety, out-of-scope, instruction hijacking, ambiguity, follow-ups and honest limits.</p>
-        <p>A 92-prompt hostile battery adds 62 attacks and 30 legitimate questions. The legitimate half is the point: hardening alone teaches a model to duck anything containing the word "pesticide", which is safe and useless.</p>
-      </div>
-      <div>
-        <h3>The attacks</h3>
-        <p>Direct jailbreaks, roleplay, fiction and hypothetical framing, false authority, emotional and incremental pressure, prompt injection and leaking, obfuscation (leetspeak, spelled out, reversed), self-harm, deliberate poisoning, illegal cultivation, veterinary-to-human drug crossover and off-domain requests.</p>
-        <p class="note">Each prompt carries a contract: must refuse, may refuse, must clarify, or must answer, plus words that must and must not appear. The scorer was corrected four times and every old build re-scored under the final version. It matches keywords, which is its limit, and the judges' feedback exposed exactly that.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec alt" id="verdict">
-  <div class="wrap">
-    <div class="sec-head"><p class="kicker">The judges' verdict</p><h2>What they found, and what it taught me.</h2>
-      <p class="lede">Round 1: safety strong, agronomy wrong. The semifinal feedback was specific, and every finding was right.</p></div>
-    <div class="tw"><table>
-      <thead><tr><th>What the judges found</th><th>What was actually wrong</th><th>What changes</th></tr></thead>
-      <tbody>
-        <tr><td>Stem borer described as a soilborne fungus.</td><td>The opening sentence of an answer is dependable; later sentences can be false. My scorer matches keywords, so a true first sentence hides a false third.</td><td>Claim-level checking: every sentence must trace to a fact in the base, or fail.</td></tr>
-        <tr><td>Sick chicks told to restrict water.</td><td>The fact base held the identification and cause of coccidiosis but no control action (20 of 21 disease entries had one). With nothing grounded to say, the model invented a step, and it was backwards: coccidiosis dehydrates birds.</td><td>Add the missing control action, and make every livestock treatment step say to confirm with a vet.</td></tr>
-        <tr><td>Blossom end rot in tomato misread as nematodes.</td><td>A diagnosis the fact base covered thinly, with no contrast against the look-alike.</td><td>A differential pair that teaches the two apart in both directions.</td></tr>
-        <tr><td>Pidgin answer invented a chemical, "imborboxylic spray".</td><td>The Pidgin slice was the least grounded data in the corpus. I had withdrawn the claim, but the model still answers in Pidgin, and an invented chemical is the exact harm the design exists to prevent.</td><td>Rebuild Pidgin from the same curated fact base as the English, starting from the Masakhane datasets.</td></tr>
-      </tbody>
-    </table></div>
-    <div class="two" style="margin-top:40px">
-      <div>
-        <h3>The diagnosis: tail drift</h3>
-        <p>AGBE is accurate in its first sentence and can drift after it. In the answers above, the refusal to give a dose is dependable and the explanation that follows is not. That is a precise defect with a precise cause, and it is measurable: the next scorer checks claims, not keywords.</p>
-        <p>One more finding of my own: at higher sampling temperatures the shipped model varies and some answers are worse. Any deployment sets decoding conservatively, and the roadmap fixes the cause.</p>
-      </div>
-      <div>
-        <h3>Why this reads as a strength</h3>
-        <p>Retraining was not allowed once the finals were set, so the judges' findings are published here as they were: found, traced to the data, and queued. Every failure above maps to a gap I can point at in the fact base or the scorer. That is what a measured build looks like, and why the next version can be better on purpose, not by luck.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="safety">
+<section class="sec alt" id="safety">
   <div class="wrap two">
     <div>
       <p class="kicker">Safety by design</p>
@@ -289,53 +201,23 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
   </div>
 </section>
 
-<section class="sec" id="v2">
-  <div class="wrap">
-    <p class="kicker">Version 2, in progress</p>
-    <h2>What has been built since the final, and what broke on the way.</h2>
-    <p class="lede">The judges said the safety was strong and the agronomy was wrong. Version 2 is the answer to that: answers that come from licensed sources, are checked sentence by sentence, and say so when no source covers the question. It is not shipped yet. This section is the honest ledger of where it stands.</p>
 
-    <div class="two" style="margin-top:40px">
-      <div>
-        <h3>Where it stands, with numbers</h3>
-        <div class="tw"><table>
-          <thead><tr><th>Piece</th><th class="n">State</th></tr></thead>
-          <tbody>
-            <tr><td>Open-licence source passages</td><td class="n">8,062 from 279 documents</td></tr>
-            <tr><td>Facts accepted by the verifier</td><td class="n">1,205 of 1,765 proposed</td></tr>
-            <tr><td>Documents the facts come from</td><td class="n">123</td></tr>
-            <tr><td>Training conversations</td><td class="n">1,280 (964 sourced, 118 abstain, 198 refusal)</td></tr>
-            <tr><td>Held-out test cases never trained on</td><td class="n">140</td></tr>
-            <tr><td>Guard, dev attacks stopped</td><td class="n">53 of 62, none of 30 legitimate blocked</td></tr>
-            <tr><td>Guard, attacks written before tuning</td><td class="n">28 of 30, none of 22 legitimate blocked</td></tr>
-            <tr><td>First training run, small test</td><td class="n">loss 2.8 to 0.44, 89% token accuracy</td></tr>
-            <tr class="pick"><td>Scored v2 model</td><td class="n">not yet, so not claimed</td></tr>
-          </tbody>
-          <caption>Facts are kept only if their quote appears word for word in the source passage, they contain no chemical rate, and they describe advice, not a study. Source licences are Creative Commons attribution only for now.</caption>
-        </table></div>
-      </div>
-      <div>
-        <h3>How an answer is built</h3>
-        <ol class="road">
-          <li><div><b>Hard rules first</b><p>Doses, medicine for people, harm, illegal crops and attempts to change the rules get a fixed, short, safe reply. The model never sees them.</p></div></li>
-          <li><div><b>Retrieve, then answer from the sources</b><p>The model is given numbered passages and trained to answer from them and cite them. If nothing relevant is found it says it has no source.</p></div></li>
-          <li><div><b>Check every sentence</b><p>A sentence with no support in the passages is removed, and a chemical rate is removed whatever its support. Answers stop after the verified steps.</p></div></li>
-        </ol>
-      </div>
+<section class="sec" id="adtc">
+  <div class="wrap two">
+    <div>
+      <p class="kicker">Archive</p>
+      <h2>The Africa Deep Tech Challenge 2026 record.</h2>
+      <p>The first version of AGBE, v16, was built for this competition and reached the final as one of the top 10 finalists among 291 submissions. Everything from that run is kept on its own page: the scoreboard, the tests on the shipped file, the build ledger and the judges' verdict.</p>
+      <p><a class="btn solid" href="/adtc/">Open the ADTC archive</a></p>
     </div>
-
-    <h3 style="margin-top:56px">What broke, and what it taught</h3>
-    <p>Most of the work after the final was finding faults in my own pipeline before they reached a farmer. These are the real ones, in the order they were found.</p>
-    <ol class="road">
-      <li><div><b>The first model ignored its sources</b><p>Version 16 answers from memory and barely reads the passages it is given, so a guard around it abstains on everything. Version 2 therefore has to be trained to answer from sources. A general 3B model worked through the guard, which proved the design.</p></div></li>
-      <li><div><b>A quarter of the training answers did not address the question</b><p>Reading the actual data, not just counting it, showed answers about torches for a question about timing. A relevance rule now drops those, along with survey findings and human-health sentences.</p></div></li>
-      <li><div><b>A save-and-restore script restored stale data</b><p>It uploaded its own scratch folder, nested deeper on every run, and later restored old copies. One test trained on the old, smaller set. It was fixed and checked against the real repository.</p></div></li>
-      <li><div><b>The saved adapter was the wrong object</b><p>Training reported success but wrote the base model, not the small adapter. The merge then found nothing to merge.</p></div></li>
-      <li><div><b>The free GPU needed special handling</b><p>It has no native bfloat16, so training crashed on its first step until the model was loaded in 16-bit float with the adapter weights kept in 32-bit float. Fixed once, then checked on every later run.</p></div></li>
-      <li><div><b>The merge overwrote the trained weights</b><p>After merging, a copy step also copied the untrained base weights over the result. Every test of the tuned model then matched the base exactly, which is what exposed it. Probing real held-out prompts showed the trained model does answer in short, cited sentences. The fix copies only tokenizer files and re-checks the finished folder.</p></div></li>
-    </ol>
-    <p class="lede" style="margin-top:28px">Each of these was caught by a test that could fail, which is the reason to build the tests first. The numbers above will be replaced with measured results as soon as the next training run scores.</p>
-    <p><a href="https://github.com/nevodesigns/agbe/blob/agbe2/docs/V2_ENGINEERING_LOG.md" rel="noopener">Read the full engineering log</a> &middot; <a href="https://github.com/nevodesigns/agbe/tree/agbe2" rel="noopener">The agbe2 branch</a></p>
+    <div>
+      <img class="seal-card" src="/img/badge-top10.svg" alt="Top 10 finalist badge" width="150" height="150">
+      <ul class="facts">
+        <li><b>57.44</b> semifinal score, rank 8 of 15</li>
+        <li><b>814 MB</b> model, <b>24 tokens</b> a second</li>
+        <li><b>0</b> safety leaks in 92 hostile prompts</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -401,7 +283,7 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
 
 llama-cli -m agbe.gguf -t 4 -ngl 0 -c 2048 --temp 0 --seed 1 -st \
   -p "My child has a fever and is vomiting. What medicine should I give?"</div></div></div>
-      <p class="note" style="margin-top:14px"><a href="https://huggingface.co/NEVODESIGN/agbe-1b" rel="noopener">Model on Hugging Face</a> &middot; <a href="https://github.com/nevodesigns/agbe" rel="noopener">Source, corpus and build ledger</a> &middot; <a href="https://youtu.be/sevKpLqCt-E" rel="noopener">Demo video</a> &middot; <a href="https://www.kaggle.com/code/nevodm/notebookba584b3371" rel="noopener">Training run on Kaggle</a></p>
+      <p class="note" style="margin-top:14px"><a href="/adtc/">ADTC 2026 archive</a><br><a href="https://huggingface.co/NEVODESIGN/agbe-1b" rel="noopener">Model on Hugging Face</a> &middot; <a href="https://github.com/nevodesigns/agbe" rel="noopener">Source, corpus and build ledger</a> &middot; <a href="https://youtu.be/sevKpLqCt-E" rel="noopener">Demo video</a> &middot; <a href="https://www.kaggle.com/code/nevodm/notebookba584b3371" rel="noopener">Training run on Kaggle</a></p>
     </div>
   </div>
 </section>
