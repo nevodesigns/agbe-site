@@ -86,8 +86,11 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
             <tr><td>Cites the right source, Qwen3 1.7B</td><td class="n">55.7% to 92.9%</td></tr>
             <tr><td>Abstains when no source covers it, Qwen3 4B</td><td class="n">18.6% to 71.4%</td></tr>
             <tr class="pick"><td>Abstains when no source covers it, Qwen3 1.7B</td><td class="n">1.4% to 41.4% (the gap)</td></tr>
+            <tr><td>Shrunk to the shipped 4-bit file: Qwen3 4B</td><td class="n">90.0% pass, 80.0% abstains</td></tr>
+            <tr><td>Shrunk to the shipped 4-bit file: Qwen3 1.7B</td><td class="n">87.1% pass, 41.4% abstains</td></tr>
+            <tr><td>Speed on a slow shared 4-core cloud CPU, Qwen3 1.7B</td><td class="n">8.8 tokens/s, 31 s per answer</td></tr>
           </tbody>
-          <caption>Facts are kept only if their quote appears word for word in the source passage, they contain no chemical rate, and they describe advice, not a study. Source licences are Creative Commons attribution only for now. Untrained to tuned, two epochs on the same 1,216 examples, scored on 140 cases held out by passage (not by document), before the models are shrunk to 4-bit. Speed and memory of the shrunk files are not measured yet.</caption>
+          <caption>Facts are kept only if their quote appears word for word in the source passage, they contain no chemical rate, and they describe advice, not a study. Source licences are Creative Commons attribution only for now. Untrained to tuned, two epochs on the same 1,216 examples, scored on 140 cases held out by passage (not by document), before the models are shrunk to 4-bit. Speeds are from a shared 2.2 GHz cloud CPU with long source prompts (about 850 tokens), slower than the competition machine, and memory is being re-measured.</caption>
         </table></div>
       </div>
       <div>
@@ -101,7 +104,7 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
     </div>
 
     <h3 style="margin-top:56px">What broke, and what it taught</h3>
-    <p>Most of the work after the final was finding faults in my own pipeline before they reached a farmer. These are the real ones, in the order they were found.</p>
+    <p>Most of the work after the final was finding faults in my own pipeline before they reached a farmer. These are the real ones, in the order they were found. The memory finding is the latest.</p>
     <ol class="road">
       <li><div><b>The first model ignored its sources</b><p>Version 16 answers from memory and barely reads the passages it is given, so a guard around it abstains on everything. Version 2 therefore has to be trained to answer from sources. A general 3B model worked through the guard, which proved the design.</p></div></li>
       <li><div><b>A quarter of the training answers did not address the question</b><p>Reading the actual data, not just counting it, showed answers about torches for a question about timing. A relevance rule now drops those, along with survey findings and human-health sentences.</p></div></li>
@@ -109,8 +112,9 @@ A fever with vomiting in a child can worsen quickly, so please take her to a cli
       <li><div><b>The saved adapter was the wrong object</b><p>Training reported success but wrote the base model, not the small adapter. The merge then found nothing to merge.</p></div></li>
       <li><div><b>The free GPU needed special handling</b><p>It has no native bfloat16, so training crashed on its first step until the model was loaded in 16-bit float with the adapter weights kept in 32-bit float. Fixed once, then checked on every later run.</p></div></li>
       <li><div><b>The merge overwrote the trained weights</b><p>After merging, a copy step also copied the untrained base weights over the result. Every test of the tuned model then matched the base exactly, which is what exposed it. Probing real held-out prompts showed the trained model does answer in short, cited sentences. The fix copies only tokenizer files and re-checks the finished folder.</p></div></li>
+      <li><div><b>The first memory reading was wrong</b><p>The inference server keeps a cache of past prompts, so a 1.1 GB model reported a 10 GB peak. It could not be true, so it was not quoted. The cache is now switched off and the measurement repeated, with the competition file timed on the same machine as a control.</p></div></li>
     </ol>
-    <p class="lede" style="margin-top:28px">Each of these was caught by a test that could fail, which is the reason to build the tests first. Three base models were trained and scored. The next numbers to land are the speed and memory of the shrunk files on a four-core CPU, and better abstention.</p>
+    <p class="lede" style="margin-top:28px">Each of these was caught by a test that could fail, which is the reason to build the tests first. Three base models were trained, scored, and shrunk to 4-bit with no measurable loss. The next numbers to land are trustworthy memory, speed against the competition file on the same machine, a shorter prompt, and better abstention.</p>
     <p><a href="https://github.com/nevodesigns/agbe/blob/agbe2/docs/V2_ENGINEERING_LOG.md" rel="noopener">Read the full engineering log</a> &middot; <a href="https://github.com/nevodesigns/agbe/tree/agbe2" rel="noopener">The agbe2 branch</a></p>
   </div>
 </section>
